@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Enums\NotificationPriority;
 use App\Enums\NotificationStatus;
 use App\Enums\NotificationTargetType;
@@ -12,6 +14,7 @@ use App\Http\Requests\SuperAdmin\Notification\StoreNotificationRequest;
 use App\Http\Requests\SuperAdmin\Notification\UpdateNotificationRequest;
 use App\Models\Notification;
 use App\Models\Store;
+use App\Services\AuditLogger;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -165,6 +168,15 @@ class NotificationController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::CREATED,
+            AuditModule::NOTIFICATIONS,
+            "Created notification: {$notification->title} ({$status->value})",
+            $notification,
+            null,
+            $notification->toArray()
+        );
+
         $statusMsg = match ($status) {
             NotificationStatus::SENT => 'Notification published and marked as sent.',
             NotificationStatus::SCHEDULED => "Notification scheduled for delivery at {$scheduledAt->format('M d, Y h:i A')}.",
@@ -223,6 +235,7 @@ class NotificationController extends Controller
         }
 
         $validated = $request->validated();
+        $oldValues = $notification->toArray();
 
         $deliveryMode = $validated['delivery_mode'];
         $status = NotificationStatus::DRAFT;
@@ -250,6 +263,15 @@ class NotificationController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::UPDATED,
+            AuditModule::NOTIFICATIONS,
+            "Updated notification: {$notification->title}",
+            $notification,
+            $oldValues,
+            $notification->toArray()
+        );
+
         return redirect()->route('super-admin.notifications.show', $notification)
             ->with('success', 'Notification updated successfully.');
     }
@@ -269,6 +291,15 @@ class NotificationController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::CANCELLED,
+            AuditModule::NOTIFICATIONS,
+            "Cancelled scheduled notification: {$notification->title}",
+            $notification,
+            ['status' => 'scheduled'],
+            ['status' => 'cancelled']
+        );
+
         return redirect()->back()
             ->with('success', 'Scheduled notification cancelled successfully.');
     }
@@ -278,14 +309,23 @@ class NotificationController extends Controller
      */
     public function destroy(Notification $notification): RedirectResponse
     {
-        if ($notification->isSent()) {
-            return redirect()->back()
+        if (! $notification->canBeDeleted()) {
+            return redirect()->route('super-admin.notifications.index')
                 ->with('error', 'Sent notifications cannot be deleted to maintain audit integrity.');
         }
 
+        $title = $notification->title;
         $notification->delete();
 
+        AuditLogger::log(
+            AuditAction::DELETED,
+            AuditModule::NOTIFICATIONS,
+            "Deleted notification: {$title}",
+            null,
+            ['title' => $title]
+        );
+
         return redirect()->route('super-admin.notifications.index')
-            ->with('success', 'Notification removed successfully.');
+            ->with('success', 'Notification deleted successfully.');
     }
 }

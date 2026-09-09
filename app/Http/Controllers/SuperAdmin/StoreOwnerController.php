@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\StoreOwner\StoreStoreOwnerRequest;
 use App\Http\Requests\SuperAdmin\StoreOwner\UpdateStoreOwnerRequest;
 use App\Models\Store;
 use App\Models\User;
+use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -101,6 +104,15 @@ class StoreOwnerController extends Controller
             'email_verified_at' => now(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::CREATED,
+            AuditModule::STORE_OWNERS,
+            "Created store owner: {$owner->name} ({$owner->email})",
+            $owner,
+            null,
+            $owner->toArray()
+        );
+
         return redirect()->route('super-admin.store-owners.show', $owner)
             ->with('status', "Store Owner [{$owner->name}] created and assigned successfully!");
     }
@@ -142,6 +154,7 @@ class StoreOwnerController extends Controller
         abort_unless($user->isStoreOwner(), 404);
 
         $data = $request->validated();
+        $oldValues = $user->toArray();
 
         $updateData = [
             'name' => $data['name'],
@@ -156,6 +169,15 @@ class StoreOwnerController extends Controller
         }
 
         $user->update($updateData);
+
+        AuditLogger::log(
+            AuditAction::UPDATED,
+            AuditModule::STORE_OWNERS,
+            "Updated store owner profile: {$user->name}",
+            $user,
+            $oldValues,
+            $user->toArray()
+        );
 
         return redirect()->route('super-admin.store-owners.show', $user)
             ->with('status', "Store Owner [{$user->name}] profile updated successfully!");
@@ -173,6 +195,7 @@ class StoreOwnerController extends Controller
         ]);
 
         $newActiveState = (bool) $request->input('is_active');
+        $oldState = (bool) $user->is_active;
 
         // If activating, verify no other active primary owner exists on that store
         if ($newActiveState && $user->store_id) {
@@ -188,6 +211,15 @@ class StoreOwnerController extends Controller
         }
 
         $user->update(['is_active' => $newActiveState]);
+
+        AuditLogger::log(
+            $newActiveState ? AuditAction::ACTIVATED : AuditAction::DEACTIVATED,
+            AuditModule::STORE_OWNERS,
+            "Updated store owner [{$user->name}] status to ".($newActiveState ? 'Active' : 'Inactive').'.',
+            $user,
+            ['is_active' => $oldState],
+            ['is_active' => $newActiveState]
+        );
 
         $stateText = $newActiveState ? 'Activated' : 'Deactivated';
 

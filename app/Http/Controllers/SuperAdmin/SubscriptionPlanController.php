@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Enums\BillingCycle;
 use App\Enums\PlanStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\Subscription\StoreSubscriptionPlanRequest;
 use App\Http\Requests\SuperAdmin\Subscription\UpdateSubscriptionPlanRequest;
 use App\Models\SubscriptionPlan;
+use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -103,6 +106,15 @@ class SubscriptionPlanController extends Controller
             'created_by' => auth()->id(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::CREATED,
+            AuditModule::SUBSCRIPTION_PLANS,
+            "Created subscription plan: {$plan->name} ({$plan->billing_cycle->value})",
+            $plan,
+            null,
+            $plan->toArray()
+        );
+
         return redirect()->route('super-admin.subscriptions.plans.show', $plan)
             ->with('status', "Subscription Plan [{$plan->name}] created successfully!");
     }
@@ -141,6 +153,7 @@ class SubscriptionPlanController extends Controller
     public function update(UpdateSubscriptionPlanRequest $request, SubscriptionPlan $plan): RedirectResponse
     {
         $data = $request->validated();
+        $oldValues = $plan->toArray();
 
         $slug = ! empty($data['slug'])
             ? SubscriptionPlan::generateUniqueSlug($data['slug'], $plan->id)
@@ -161,6 +174,15 @@ class SubscriptionPlanController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::UPDATED,
+            AuditModule::SUBSCRIPTION_PLANS,
+            "Updated subscription plan: {$plan->name}",
+            $plan,
+            $oldValues,
+            $plan->toArray()
+        );
+
         return redirect()->route('super-admin.subscriptions.plans.show', $plan)
             ->with('status', "Subscription Plan [{$plan->name}] updated successfully!");
     }
@@ -174,12 +196,22 @@ class SubscriptionPlanController extends Controller
             'status' => ['required', 'string', 'in:active,inactive'],
         ]);
 
+        $oldStatus = $plan->status->value;
         $newStatus = PlanStatus::from($request->input('status'));
 
         $plan->update([
             'status' => $newStatus,
             'updated_by' => auth()->id(),
         ]);
+
+        AuditLogger::log(
+            $newStatus === PlanStatus::ACTIVE ? AuditAction::ACTIVATED : AuditAction::DEACTIVATED,
+            AuditModule::SUBSCRIPTION_PLANS,
+            "Updated subscription plan [{$plan->name}] status from {$oldStatus} to {$newStatus->value}.",
+            $plan,
+            ['status' => $oldStatus],
+            ['status' => $newStatus->value]
+        );
 
         $actionText = $newStatus === PlanStatus::ACTIVE ? 'Activated' : 'Deactivated';
 

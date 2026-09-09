@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\Setting\UpdateSettingRequest;
 use App\Models\Setting;
+use App\Services\AuditLogger;
 use App\Services\SettingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -112,6 +115,15 @@ class SettingController extends Controller
         // Save batch
         if (! empty($updates)) {
             $this->settingService->setMany($updates, $userId);
+
+            AuditLogger::log(
+                AuditAction::SETTINGS_UPDATED,
+                AuditModule::SETTINGS,
+                'Updated '.ucfirst($group).' system settings.',
+                null,
+                null,
+                $updates
+            );
         }
 
         return redirect()->route('super-admin.settings.index', ['tab' => $group])

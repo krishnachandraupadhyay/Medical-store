@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Enums\PlanStatus;
 use App\Enums\StoreStatus;
 use App\Enums\SubscriptionStatus;
@@ -11,6 +13,7 @@ use App\Http\Requests\SuperAdmin\Subscription\UpdateStoreSubscriptionRequest;
 use App\Models\Store;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
+use App\Services\AuditLogger;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -166,6 +169,15 @@ class StoreSubscriptionController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::ASSIGNED,
+            AuditModule::STORE_SUBSCRIPTIONS,
+            "Assigned subscription plan to store: {$subscription->store->name}",
+            $subscription,
+            null,
+            $subscription->toArray()
+        );
+
         return redirect()
             ->route('super-admin.subscriptions.stores.show', $subscription)
             ->with('success', 'Subscription plan assigned successfully to medical store.');
@@ -210,6 +222,7 @@ class StoreSubscriptionController extends Controller
     public function update(UpdateStoreSubscriptionRequest $request, Subscription $subscription): RedirectResponse
     {
         $data = $request->validated();
+        $oldValues = $subscription->toArray();
 
         $subscription->update([
             'subscription_plan_id' => $data['subscription_plan_id'],
@@ -220,6 +233,15 @@ class StoreSubscriptionController extends Controller
             'notes' => $data['notes'] ?? null,
             'updated_by' => auth()->id(),
         ]);
+
+        AuditLogger::log(
+            AuditAction::UPDATED,
+            AuditModule::STORE_SUBSCRIPTIONS,
+            "Updated subscription for store: {$subscription->store->name}",
+            $subscription,
+            $oldValues,
+            $subscription->toArray()
+        );
 
         return redirect()
             ->route('super-admin.subscriptions.stores.show', $subscription)
@@ -235,12 +257,29 @@ class StoreSubscriptionController extends Controller
             'status' => ['required', 'string', 'in:active,trial,expired,cancelled,suspended'],
         ]);
 
+        $oldStatus = $subscription->status->value;
         $newStatus = SubscriptionStatus::from($request->string('status')->value());
 
         $subscription->update([
             'status' => $newStatus,
             'updated_by' => auth()->id(),
         ]);
+
+        $action = match ($newStatus) {
+            SubscriptionStatus::ACTIVE => AuditAction::ACTIVATED,
+            SubscriptionStatus::CANCELLED => AuditAction::CANCELLED,
+            SubscriptionStatus::SUSPENDED => AuditAction::SUSPENDED,
+            default => AuditAction::STATUS_CHANGED,
+        };
+
+        AuditLogger::log(
+            $action,
+            AuditModule::STORE_SUBSCRIPTIONS,
+            "Updated subscription status for store: {$subscription->store->name} to {$newStatus->value}.",
+            $subscription,
+            ['status' => $oldStatus],
+            ['status' => $newStatus->value]
+        );
 
         $label = $newStatus->label();
 

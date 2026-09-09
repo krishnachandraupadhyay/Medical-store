@@ -6,6 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\SubscriptionStatus;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Models\AuditLog;
 use App\Models\Payment;
 use App\Models\Store;
 use App\Models\Subscription;
@@ -13,7 +14,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
@@ -62,10 +62,10 @@ class DashboardController extends Controller
             ? Store::with('owners')->latest()->limit(5)->get()
             : collect([]);
 
-        // 4. System Activities
+        // 4. System Activities (Real Audit Logs)
         $hasAuditLogsTable = Schema::hasTable('audit_logs');
         $recentActivities = $hasAuditLogsTable
-            ? DB::table('audit_logs')->latest()->limit(5)->get()
+            ? AuditLog::with('user')->latest('id')->limit(5)->get()
             : collect([]);
 
         $stats = [

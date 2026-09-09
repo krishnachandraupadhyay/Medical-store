@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\LoginRequest;
 use App\Models\User;
+use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -62,6 +65,16 @@ class AuthController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
+        AuditLogger::log(
+            AuditAction::LOGIN,
+            AuditModule::AUTH,
+            "Super Admin {$user->name} logged in successfully.",
+            $user,
+            null,
+            null,
+            $user
+        );
+
         return redirect()->intended(route('super-admin.dashboard'));
     }
 
@@ -70,6 +83,20 @@ class AuthController extends Controller
      */
     public function logout(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+
+        if ($user) {
+            AuditLogger::log(
+                AuditAction::LOGOUT,
+                AuditModule::AUTH,
+                "Super Admin {$user->name} logged out.",
+                $user,
+                null,
+                null,
+                $user
+            );
+        }
+
         Auth::logout();
 
         $request->session()->invalidate();

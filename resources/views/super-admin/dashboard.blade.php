@@ -351,6 +351,32 @@
                 </div>
             </div>
 
+            <!-- Recent Admin Activity (Audit Logs) -->
+            <div class="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-bold text-[#1e2746] tracking-tight">Recent Admin Activity</h3>
+                    <a href="{{ route('super-admin.audit-logs.index') }}" class="text-[11px] font-bold text-[#4b55c8] hover:underline">View All &rarr;</a>
+                </div>
+
+                <div class="space-y-3">
+                    @forelse($stats['recent_activities'] as $activity)
+                        <a href="{{ route('super-admin.audit-logs.show', $activity->id) }}" class="block p-3 rounded-2xl bg-[#f8faff] hover:bg-slate-50 border border-slate-100 transition group">
+                            <div class="flex items-center justify-between text-[11px] mb-1">
+                                <span class="font-bold text-[#1e2746] group-hover:text-[#4b55c8] transition-colors truncate max-w-[150px]">
+                                    {{ $activity->user->name ?? 'System' }}
+                                </span>
+                                <span class="text-slate-400 font-mono">{{ $activity->created_at->diffForHumans() }}</span>
+                            </div>
+                            <p class="text-xs text-[#627094] line-clamp-1 leading-snug">{{ $activity->description }}</p>
+                        </a>
+                    @empty
+                        <div class="py-4 text-center text-xs text-slate-400">
+                            No recent administrative actions recorded.
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
         </div>
 
     </div>

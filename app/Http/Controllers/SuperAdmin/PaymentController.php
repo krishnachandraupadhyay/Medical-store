@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Enums\PaymentMethod;
 use App\Enums\PaymentStatus;
 use App\Enums\PlanStatus;
@@ -12,6 +14,7 @@ use App\Models\Payment;
 use App\Models\Store;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
+use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -173,22 +176,25 @@ class PaymentController extends Controller
             'updated_by' => auth()->id(),
         ]);
 
+        AuditLogger::log(
+            AuditAction::CREATED,
+            AuditModule::PAYMENTS,
+            "Recorded payment of {$payment->currency} ".number_format($payment->amount, 2)." ({$payment->transaction_id})",
+            $payment,
+            null,
+            $payment->toArray()
+        );
+
         return redirect()->route('super-admin.payments.show', $payment)
             ->with('success', "Payment record [{$payment->transaction_id}] of ₹".number_format($payment->amount, 2).' recorded successfully.');
     }
 
     /**
-     * Display the specified payment.
+     * Display the specified payment record details.
      */
     public function show(Payment $payment): View
     {
-        $payment->load([
-            'store.owners',
-            'subscription.plan',
-            'subscriptionPlan',
-            'creator',
-            'updater',
-        ]);
+        $payment->load(['store.owners', 'subscription.plan', 'subscriptionPlan', 'creator', 'updater']);
 
         return view('super-admin.payments.show', compact('payment'));
     }
@@ -211,9 +217,19 @@ class PaymentController extends Controller
     public function update(UpdatePaymentRequest $request, Payment $payment): RedirectResponse
     {
         $validated = $request->validated();
+        $oldValues = $payment->toArray();
         $validated['updated_by'] = auth()->id();
 
         $payment->update($validated);
+
+        AuditLogger::log(
+            AuditAction::UPDATED,
+            AuditModule::PAYMENTS,
+            "Updated payment details: {$payment->transaction_id}",
+            $payment,
+            $oldValues,
+            $payment->toArray()
+        );
 
         return redirect()->route('super-admin.payments.show', $payment)
             ->with('success', "Payment record [{$payment->transaction_id}] updated successfully.");
@@ -230,6 +246,7 @@ class PaymentController extends Controller
         ]);
 
         $oldStatus = $payment->status->label();
+        $oldRawStatus = $payment->status->value;
         $newStatusEnum = PaymentStatus::from($request->status);
 
         $payment->status = $newStatusEnum;
@@ -238,6 +255,15 @@ class PaymentController extends Controller
             $payment->notes = trim(($payment->notes ? $payment->notes."\n" : '')."[Status changed from {$oldStatus} to {$newStatusEnum->label()}]: ".$request->notes);
         }
         $payment->save();
+
+        AuditLogger::log(
+            AuditAction::STATUS_CHANGED,
+            AuditModule::PAYMENTS,
+            "Updated payment [{$payment->transaction_id}] status from {$oldRawStatus} to {$newStatusEnum->value}.",
+            $payment,
+            ['status' => $oldRawStatus],
+            ['status' => $newStatusEnum->value]
+        );
 
         return redirect()->back()
             ->with('success', "Payment [{$payment->transaction_id}] status changed from {$oldStatus} to {$newStatusEnum->label()}.");

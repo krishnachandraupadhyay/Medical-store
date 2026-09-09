@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SuperAdmin\AuditLogController as SuperAdminAuditLogController;
 use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
 use App\Http\Controllers\SuperAdmin\NotificationController;
@@ -102,5 +103,9 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
         // System Settings Routes (Phase 10)
         Route::get('/settings', [SuperAdminSettingController::class, 'index'])->name('settings.index');
         Route::put('/settings', [SuperAdminSettingController::class, 'update'])->name('settings.update');
+
+        // Audit Logs Routes (Phase 11)
+        Route::get('/audit-logs', [SuperAdminAuditLogController::class, 'index'])->name('audit-logs.index');
+        Route::get('/audit-logs/{auditLog}', [SuperAdminAuditLogController::class, 'show'])->name('audit-logs.show');
     });
 });

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Enums\AuditAction;
+use App\Enums\AuditModule;
 use App\Enums\StoreStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SuperAdmin\Store\StoreStoreRequest;
 use App\Http\Requests\SuperAdmin\Store\UpdateStoreRequest;
 use App\Models\Store;
+use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -91,6 +94,15 @@ class StoreController extends Controller
 
         $store = Store::create($data);
 
+        AuditLogger::log(
+            AuditAction::CREATED,
+            AuditModule::STORES,
+            "Created store: {$store->name} ({$store->code})",
+            $store,
+            null,
+            $store->toArray()
+        );
+
         return redirect()->route('super-admin.stores.show', $store)
             ->with('status', "Store [{$store->name}] ({$store->code}) created successfully!");
     }
@@ -123,6 +135,7 @@ class StoreController extends Controller
     public function update(UpdateStoreRequest $request, Store $store): RedirectResponse
     {
         $data = $request->validated();
+        $oldValues = $store->toArray();
 
         // Ensure Store Code is NOT modified
         unset($data['code']);
@@ -137,6 +150,15 @@ class StoreController extends Controller
 
         $store->update($data);
 
+        AuditLogger::log(
+            AuditAction::UPDATED,
+            AuditModule::STORES,
+            "Updated store details: {$store->name} ({$store->code})",
+            $store,
+            $oldValues,
+            $store->toArray()
+        );
+
         return redirect()->route('super-admin.stores.show', $store)
             ->with('status', "Store details for [{$store->name}] updated successfully!");
     }
@@ -150,8 +172,24 @@ class StoreController extends Controller
             'status' => ['required', Rule::enum(StoreStatus::class)],
         ]);
 
+        $oldStatus = $store->status->value;
         $newStatus = StoreStatus::from($request->input('status'));
         $store->update(['status' => $newStatus]);
+
+        $action = match ($newStatus) {
+            StoreStatus::ACTIVE => AuditAction::ACTIVATED,
+            StoreStatus::SUSPENDED => AuditAction::SUSPENDED,
+            default => AuditAction::STATUS_CHANGED,
+        };
+
+        AuditLogger::log(
+            $action,
+            AuditModule::STORES,
+            "Updated store [{$store->code}] status from {$oldStatus} to {$newStatus->value}.",
+            $store,
+            ['status' => $oldStatus],
+            ['status' => $newStatus->value]
+        );
 
         $statusLabel = $newStatus->label();
 
