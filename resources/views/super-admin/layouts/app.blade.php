@@ -40,14 +40,13 @@
             }
         }
     </script>
-    <!-- Chart.js for light dynamic chart rendering -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        /* Custom scrollbar for data tables */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -101,24 +100,24 @@
                 <div class="px-3 py-4 space-y-1 overflow-y-auto max-h-[calc(100vh-140px)]">
                     <div class="px-3 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">Core Management</div>
 
-                    <!-- Dashboard (Active) -->
-                    <a href="{{ route('super-admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold bg-gradient-to-r from-teal-500/15 to-emerald-500/10 text-teal-300 border border-teal-500/30 transition">
-                        <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Dashboard -->
+                    <a href="{{ route('super-admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('super-admin.dashboard') ? 'bg-gradient-to-r from-teal-500/15 to-emerald-500/10 text-teal-300 border border-teal-500/30' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50' }}">
+                        <svg class="w-5 h-5 {{ request()->routeIs('super-admin.dashboard') ? 'text-teal-400' : 'text-slate-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
                         <span>Dashboard</span>
                     </a>
 
-                    <!-- Stores (Placeholder) -->
-                    <div class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/40 cursor-not-allowed group">
+                    <!-- Stores (Active Phase 3 Module) -->
+                    <a href="{{ route('super-admin.stores.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('super-admin.stores.*') ? 'bg-gradient-to-r from-teal-500/15 to-emerald-500/10 text-teal-300 border border-teal-500/30' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-500 group-hover:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.stores.*') ? 'text-teal-400' : 'text-slate-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                             </svg>
                             <span>Stores</span>
                         </div>
-                        <span class="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/50">Soon</span>
-                    </div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ request()->routeIs('super-admin.stores.*') ? 'bg-teal-500/20 text-teal-300' : 'bg-slate-800 text-slate-400' }}">Active</span>
+                    </a>
 
                     <!-- Store Owners (Placeholder) -->
                     <div class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/40 cursor-not-allowed group">
@@ -279,6 +278,35 @@
 
             <!-- Main Page Scrollable Body -->
             <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 bg-[#060b13]">
+                <!-- Status Alerts -->
+                @if (session('status'))
+                    <div class="max-w-7xl mx-auto mb-6 p-4 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-300 text-sm flex items-center justify-between shadow-lg">
+                        <div class="flex items-center gap-2.5">
+                            <svg class="w-5 h-5 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>{{ session('status') }}</span>
+                        </div>
+                        <button onclick="this.parentElement.remove()" class="text-teal-400 hover:text-teal-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                @endif
+
+                @if (session('error'))
+                    <div class="max-w-7xl mx-auto mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-center justify-between shadow-lg">
+                        <div class="flex items-center gap-2.5">
+                            <svg class="w-5 h-5 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                            <span>{{ session('error') }}</span>
+                        </div>
+                        <button onclick="this.parentElement.remove()" class="text-rose-400 hover:text-rose-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                @endif
+
                 @yield('content')
             </main>
         </div>
