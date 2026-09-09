@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
+use App\Http\Controllers\SuperAdmin\PaymentController as SuperAdminPaymentController;
 use App\Http\Controllers\SuperAdmin\StoreController as SuperAdminStoreController;
 use App\Http\Controllers\SuperAdmin\StoreOwnerController as SuperAdminStoreOwnerController;
 use App\Http\Controllers\SuperAdmin\StoreSubscriptionController as SuperAdminStoreSubscriptionController;
@@ -68,5 +69,14 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
             Route::put('/stores/{subscription}', [SuperAdminStoreSubscriptionController::class, 'update'])->name('stores.update');
             Route::patch('/stores/{subscription}/status', [SuperAdminStoreSubscriptionController::class, 'updateStatus'])->name('stores.update-status');
         });
+
+        // Payment Management Routes (Phase 7)
+        Route::get('/payments', [SuperAdminPaymentController::class, 'index'])->name('payments.index');
+        Route::get('/payments/create', [SuperAdminPaymentController::class, 'create'])->name('payments.create');
+        Route::post('/payments', [SuperAdminPaymentController::class, 'store'])->name('payments.store');
+        Route::get('/payments/{payment}', [SuperAdminPaymentController::class, 'show'])->name('payments.show');
+        Route::get('/payments/{payment}/edit', [SuperAdminPaymentController::class, 'edit'])->name('payments.edit');
+        Route::put('/payments/{payment}', [SuperAdminPaymentController::class, 'update'])->name('payments.update');
+        Route::patch('/payments/{payment}/status', [SuperAdminPaymentController::class, 'updateStatus'])->name('payments.update-status');
     });
 });

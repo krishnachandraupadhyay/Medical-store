@@ -147,14 +147,14 @@
                     </div>
 
                     <!-- Payments -->
-                    <div class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium text-[#94a3b8] hover:bg-slate-50 cursor-pointer">
+                    <a href="{{ route('super-admin.payments.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.payments.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.payments.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                             </svg>
                             <span>Payments</span>
                         </div>
-                    </div>
+                    </a>
 
                     <!-- Reports -->
                     <div class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium text-[#94a3b8] hover:bg-slate-50 cursor-pointer">

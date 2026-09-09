@@ -176,6 +176,14 @@ class SubscriptionPlan extends Model
     }
 
     /**
+     * Get all payments under this subscription plan.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'subscription_plan_id');
+    }
+
+    /**
      * Check if a specific feature is enabled in this plan.
      */
     public function hasFeature(string $featureKey): bool

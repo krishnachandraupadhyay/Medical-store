@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Subscription extends Model
@@ -83,6 +84,14 @@ class Subscription extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /**
+     * All payments related to this subscription.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'subscription_id')->orderBy('payment_date', 'desc');
     }
 
     /**

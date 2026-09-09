@@ -87,6 +87,14 @@ class Store extends Model
     }
 
     /**
+     * Get all payments for this store.
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'store_id')->orderBy('payment_date', 'desc');
+    }
+
+    /**
      * Get the currently active subscription for this store.
      */
     public function activeSubscription(): HasOne
