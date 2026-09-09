@@ -14,9 +14,9 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $email = env('SUPER_ADMIN_EMAIL', 'superadmin@medistore.com');
-        $password = env('SUPER_ADMIN_PASSWORD', 'SuperAdmin#2026!');
-        $name = env('SUPER_ADMIN_NAME', 'Super Administrator');
+        $email = env('SUPER_ADMIN_EMAIL', 'superadmin@gmail.com');
+        $password = env('SUPER_ADMIN_PASSWORD', '12345678');
+        $name = env('SUPER_ADMIN_NAME', 'Super Admin');
 
         User::updateOrCreate(
             ['email' => $email],
