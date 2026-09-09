@@ -126,15 +126,25 @@
                         </div>
                     </a>
 
-                    <!-- Subscriptions -->
-                    <a href="{{ route('super-admin.subscriptions.plans.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.subscriptions.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.subscriptions.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            <span>Subscriptions</span>
+                    <!-- Subscriptions Section -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-semibold {{ request()->routeIs('super-admin.subscriptions.*') ? 'text-[#4b55c8]' : 'text-[#64748b]' }}">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 {{ request()->routeIs('super-admin.subscriptions.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>Subscriptions</span>
+                            </div>
                         </div>
-                    </a>
+                        <div class="pl-8 pr-2 space-y-1">
+                            <a href="{{ route('super-admin.subscriptions.plans.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.plans.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Plans</span>
+                            </a>
+                            <a href="{{ route('super-admin.subscriptions.stores.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.stores.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Store Subscriptions</span>
+                            </a>
+                        </div>
+                    </div>
 
                     <!-- Payments -->
                     <div class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium text-[#94a3b8] hover:bg-slate-50 cursor-pointer">

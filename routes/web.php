@@ -4,6 +4,7 @@ use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
 use App\Http\Controllers\SuperAdmin\StoreController as SuperAdminStoreController;
 use App\Http\Controllers\SuperAdmin\StoreOwnerController as SuperAdminStoreOwnerController;
+use App\Http\Controllers\SuperAdmin\StoreSubscriptionController as SuperAdminStoreSubscriptionController;
 use App\Http\Controllers\SuperAdmin\SubscriptionPlanController as SuperAdminSubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,8 +48,9 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
         Route::put('/store-owners/{user}', [SuperAdminStoreOwnerController::class, 'update'])->name('store-owners.update');
         Route::patch('/store-owners/{user}/status', [SuperAdminStoreOwnerController::class, 'updateStatus'])->name('store-owners.update-status');
 
-        // Subscription Plan Management Routes
+        // Subscription Management Routes
         Route::prefix('subscriptions')->name('subscriptions.')->group(function () {
+            // Subscription Plans
             Route::get('/plans', [SuperAdminSubscriptionPlanController::class, 'index'])->name('plans.index');
             Route::get('/plans/create', [SuperAdminSubscriptionPlanController::class, 'create'])->name('plans.create');
             Route::post('/plans', [SuperAdminSubscriptionPlanController::class, 'store'])->name('plans.store');
@@ -56,6 +58,15 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
             Route::get('/plans/{plan}/edit', [SuperAdminSubscriptionPlanController::class, 'edit'])->name('plans.edit');
             Route::put('/plans/{plan}', [SuperAdminSubscriptionPlanController::class, 'update'])->name('plans.update');
             Route::patch('/plans/{plan}/status', [SuperAdminSubscriptionPlanController::class, 'updateStatus'])->name('plans.update-status');
+
+            // Store Subscriptions (Phase 6)
+            Route::get('/stores', [SuperAdminStoreSubscriptionController::class, 'index'])->name('stores.index');
+            Route::get('/stores/create', [SuperAdminStoreSubscriptionController::class, 'create'])->name('stores.create');
+            Route::post('/stores', [SuperAdminStoreSubscriptionController::class, 'store'])->name('stores.store');
+            Route::get('/stores/{subscription}', [SuperAdminStoreSubscriptionController::class, 'show'])->name('stores.show');
+            Route::get('/stores/{subscription}/edit', [SuperAdminStoreSubscriptionController::class, 'edit'])->name('stores.edit');
+            Route::put('/stores/{subscription}', [SuperAdminStoreSubscriptionController::class, 'update'])->name('stores.update');
+            Route::patch('/stores/{subscription}/status', [SuperAdminStoreSubscriptionController::class, 'updateStatus'])->name('stores.update-status');
         });
     });
 });

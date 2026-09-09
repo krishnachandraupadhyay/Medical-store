@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\StoreStatus;
+use App\Enums\SubscriptionStatus;
 use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -75,6 +76,33 @@ class Store extends Model
         return $this->hasOne(User::class, 'store_id')
             ->where('role', UserRole::STORE_OWNER)
             ->where('is_active', true);
+    }
+
+    /**
+     * Get all subscriptions history for this store.
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class, 'store_id')->orderBy('id', 'desc');
+    }
+
+    /**
+     * Get the currently active subscription for this store.
+     */
+    public function activeSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'store_id')
+            ->whereIn('status', [SubscriptionStatus::ACTIVE, SubscriptionStatus::TRIAL])
+            ->where('end_date', '>=', now()->toDateString())
+            ->latestOfMany();
+    }
+
+    /**
+     * Get the latest subscription record regardless of status.
+     */
+    public function latestSubscription(): HasOne
+    {
+        return $this->hasOne(Subscription::class, 'store_id')->latestOfMany();
     }
 
     /**
