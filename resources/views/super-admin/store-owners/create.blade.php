@@ -8,7 +8,7 @@
 
     <!-- Top Navigation / Breadcrumb -->
     <div class="flex items-center justify-between">
-        <a href="{{ route('super-admin.store-owners.index') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition">
+        <a href="{{ route('super-admin.store-owners.index') }}" class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 hover:text-[#4b55c8] transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
@@ -17,12 +17,12 @@
     </div>
 
     <!-- Form Container -->
-    <div class="bg-slate-900/90 border border-slate-800/80 rounded-2xl shadow-xl overflow-hidden">
+    <div class="bg-white border border-slate-200/80 rounded-3xl shadow-sm overflow-hidden">
         
         <!-- Header -->
-        <div class="p-6 border-b border-slate-800/80 bg-slate-950/40">
-            <h2 class="text-lg sm:text-xl font-bold text-white tracking-tight">Register Store Owner Account</h2>
-            <p class="text-xs text-slate-400 mt-0.5">Create credentials and assign primary administrative authority for a medical store.</p>
+        <div class="p-6 border-b border-slate-100 bg-[#f8faff]">
+            <h2 class="text-lg sm:text-xl font-bold text-[#1e2746] tracking-tight">Register Store Owner Account</h2>
+            <p class="text-xs text-[#64748b] mt-0.5">Create credentials and assign primary administrative authority for a medical store.</p>
         </div>
 
         <form action="{{ route('super-admin.store-owners.store') }}" method="POST" class="p-6 sm:p-8 space-y-7">
@@ -30,16 +30,16 @@
 
             <!-- Section 1: Personal Details -->
             <div>
-                <h3 class="text-xs font-bold text-teal-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+                <h3 class="text-xs font-bold text-[#4b55c8] uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#4b55c8]"></span>
                     1. Personal & Contact Details
                 </h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <!-- Name -->
                     <div class="sm:col-span-2">
-                        <label for="name" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Full Name <span class="text-rose-400">*</span>
+                        <label for="name" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Full Name <span class="text-rose-500">*</span>
                         </label>
                         <input
                             type="text"
@@ -48,17 +48,17 @@
                             value="{{ old('name') }}"
                             required
                             placeholder="e.g. Rahul Sharma"
-                            class="w-full px-3.5 py-2 bg-slate-950/80 border @error('name') border-rose-500 @else border-slate-700/80 focus:border-teal-500 focus:ring-teal-500/20 @enderror rounded-xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
+                            class="w-full px-3.5 py-2.5 bg-[#f8faff] border @error('name') border-rose-300 @else border-slate-200 focus:border-[#4b55c8] focus:ring-[#4b55c8]/20 focus:bg-white @enderror rounded-xl text-[#1e2746] placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
                         >
                         @error('name')
-                            <p class="text-rose-400 text-[11px] mt-1">{{ $message }}</p>
+                            <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Email -->
                     <div>
-                        <label for="email" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Email Address <span class="text-rose-400">*</span>
+                        <label for="email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Email Address <span class="text-rose-500">*</span>
                         </label>
                         <input
                             type="email"
@@ -67,17 +67,17 @@
                             value="{{ old('email') }}"
                             required
                             placeholder="owner@medistore.com"
-                            class="w-full px-3.5 py-2 bg-slate-950/80 border @error('email') border-rose-500 @else border-slate-700/80 focus:border-teal-500 focus:ring-teal-500/20 @enderror rounded-xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
+                            class="w-full px-3.5 py-2.5 bg-[#f8faff] border @error('email') border-rose-300 @else border-slate-200 focus:border-[#4b55c8] focus:ring-[#4b55c8]/20 focus:bg-white @enderror rounded-xl text-[#1e2746] placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
                         >
                         @error('email')
-                            <p class="text-rose-400 text-[11px] mt-1">{{ $message }}</p>
+                            <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Mobile -->
                     <div>
-                        <label for="mobile" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Contact Mobile <span class="text-rose-400">*</span>
+                        <label for="mobile" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Contact Mobile <span class="text-rose-500">*</span>
                         </label>
                         <input
                             type="text"
@@ -86,33 +86,33 @@
                             value="{{ old('mobile') }}"
                             required
                             placeholder="+91 9876543210"
-                            class="w-full px-3.5 py-2 bg-slate-950/80 border @error('mobile') border-rose-500 @else border-slate-700/80 focus:border-teal-500 focus:ring-teal-500/20 @enderror rounded-xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
+                            class="w-full px-3.5 py-2.5 bg-[#f8faff] border @error('mobile') border-rose-300 @else border-slate-200 focus:border-[#4b55c8] focus:ring-[#4b55c8]/20 focus:bg-white @enderror rounded-xl text-[#1e2746] placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
                         >
                         @error('mobile')
-                            <p class="text-rose-400 text-[11px] mt-1">{{ $message }}</p>
+                            <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
             </div>
 
             <!-- Section 2: Store Assignment & Status -->
-            <div class="pt-6 border-t border-slate-800/80">
-                <h3 class="text-xs font-bold text-teal-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+            <div class="pt-6 border-t border-slate-100">
+                <h3 class="text-xs font-bold text-[#4b55c8] uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#4b55c8]"></span>
                     2. Store Assignment & Governance
                 </h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <!-- Store Selector -->
                     <div>
-                        <label for="store_id" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Assigned Medical Store <span class="text-rose-400">*</span>
+                        <label for="store_id" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Assigned Medical Store <span class="text-rose-500">*</span>
                         </label>
                         <select
                             name="store_id"
                             id="store_id"
                             required
-                            class="w-full px-3.5 py-2 bg-slate-950/80 border @error('store_id') border-rose-500 @else border-slate-700/80 focus:border-teal-500 focus:ring-teal-500/20 @enderror rounded-xl text-white text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
+                            class="w-full px-3.5 py-2.5 bg-[#f8faff] border @error('store_id') border-rose-300 @else border-slate-200 focus:border-[#4b55c8] focus:ring-[#4b55c8]/20 focus:bg-white @enderror rounded-xl text-[#1e2746] text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
                         >
                             <option value="">-- Select Medical Store --</option>
                             @foreach ($stores as $s)
@@ -121,45 +121,45 @@
                                 </option>
                             @endforeach
                         </select>
-                        <p class="text-[11px] text-slate-500 mt-1">Note: Each medical store can have only one active primary owner.</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Note: Each medical store can have only one active primary owner.</p>
                         @error('store_id')
-                            <p class="text-rose-400 text-[11px] mt-1">{{ $message }}</p>
+                            <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Status -->
                     <div>
-                        <label for="is_active" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Account Status <span class="text-rose-400">*</span>
+                        <label for="is_active" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Account Status <span class="text-rose-500">*</span>
                         </label>
                         <select
                             name="is_active"
                             id="is_active"
                             required
-                            class="w-full px-3.5 py-2 bg-slate-950/80 border @error('is_active') border-rose-500 @else border-slate-700/80 focus:border-teal-500 focus:ring-teal-500/20 @enderror rounded-xl text-white text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
+                            class="w-full px-3.5 py-2.5 bg-[#f8faff] border @error('is_active') border-rose-300 @else border-slate-200 focus:border-[#4b55c8] focus:ring-[#4b55c8]/20 focus:bg-white @enderror rounded-xl text-[#1e2746] text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
                         >
                             <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Active (Authorized)</option>
                             <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inactive (Deactivated)</option>
                         </select>
                         @error('is_active')
-                            <p class="text-rose-400 text-[11px] mt-1">{{ $message }}</p>
+                            <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
             </div>
 
             <!-- Section 3: Credentials Security -->
-            <div class="pt-6 border-t border-slate-800/80">
-                <h3 class="text-xs font-bold text-teal-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-teal-400"></span>
+            <div class="pt-6 border-t border-slate-100">
+                <h3 class="text-xs font-bold text-[#4b55c8] uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-[#4b55c8]"></span>
                     3. Security & Credentials
                 </h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <!-- Password -->
                     <div>
-                        <label for="password" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Initial Password <span class="text-rose-400">*</span>
+                        <label for="password" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Initial Password <span class="text-rose-500">*</span>
                         </label>
                         <input
                             type="password"
@@ -167,17 +167,17 @@
                             id="password"
                             required
                             placeholder="Min. 8 characters"
-                            class="w-full px-3.5 py-2 bg-slate-950/80 border @error('password') border-rose-500 @else border-slate-700/80 focus:border-teal-500 focus:ring-teal-500/20 @enderror rounded-xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
+                            class="w-full px-3.5 py-2.5 bg-[#f8faff] border @error('password') border-rose-300 @else border-slate-200 focus:border-[#4b55c8] focus:ring-[#4b55c8]/20 focus:bg-white @enderror rounded-xl text-[#1e2746] placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
                         >
                         @error('password')
-                            <p class="text-rose-400 text-[11px] mt-1">{{ $message }}</p>
+                            <p class="text-rose-500 text-[11px] mt-1">{{ $message }}</p>
                         @enderror
                     </div>
 
                     <!-- Confirm Password -->
                     <div>
-                        <label for="password_confirmation" class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Confirm Password <span class="text-rose-400">*</span>
+                        <label for="password_confirmation" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Confirm Password <span class="text-rose-500">*</span>
                         </label>
                         <input
                             type="password"
@@ -185,20 +185,20 @@
                             id="password_confirmation"
                             required
                             placeholder="Re-type password"
-                            class="w-full px-3.5 py-2 bg-slate-950/80 border border-slate-700/80 focus:border-teal-500 focus:ring-teal-500/20 rounded-xl text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
+                            class="w-full px-3.5 py-2.5 bg-[#f8faff] border border-slate-200 focus:border-[#4b55c8] focus:ring-[#4b55c8]/20 focus:bg-white rounded-xl text-[#1e2746] placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 transition"
                         >
                     </div>
                 </div>
             </div>
 
             <!-- Action Buttons -->
-            <div class="pt-6 border-t border-slate-800 flex items-center justify-end gap-3">
-                <a href="{{ route('super-admin.store-owners.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition">
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-end gap-3">
+                <a href="{{ route('super-admin.store-owners.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
                     Cancel
                 </a>
                 <button
                     type="submit"
-                    class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-slate-950 font-bold text-xs sm:text-sm shadow-lg shadow-teal-500/20 hover:shadow-teal-500/30 transition cursor-pointer"
+                    class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#4b55c8] to-[#5c67e8] hover:from-[#3f49b8] hover:to-[#4b55c8] text-white font-bold text-xs sm:text-sm shadow-md shadow-[#4b55c8]/25 transition cursor-pointer"
                 >
                     Create & Assign Store Owner
                 </button>

@@ -24,28 +24,28 @@
                     </p>
                 </div>
 
-                <!-- 3D Mini Pharmacy Dashboard Graphic -->
+                <!-- Mini Pharmacy Dashboard Graphic -->
                 <div class="relative w-44 sm:w-52 h-28 flex items-center justify-center flex-shrink-0">
-                    <div class="w-full h-full bg-white/90 backdrop-blur rounded-2xl border border-white shadow-lg p-3 flex flex-col justify-between">
+                    <div class="w-full h-full bg-white/95 backdrop-blur rounded-2xl border border-white shadow-lg p-3 flex flex-col justify-between">
                         <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
                             <div class="flex items-center gap-1.5">
                                 <div class="w-4 h-4 rounded-md bg-[#4b55c8] flex items-center justify-center text-white text-[8px] font-bold">+</div>
-                                <span class="text-[9px] font-bold text-[#1e2746]">Pharmacy Dashboard</span>
+                                <span class="text-[9px] font-bold text-[#1e2746]">Pharmacy Overview</span>
                             </div>
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-[#4b55c8]"></span>
                         </div>
                         <div class="grid grid-cols-3 gap-1.5 py-1">
-                            <div class="bg-blue-50/70 p-1 rounded-lg">
+                            <div class="bg-blue-50/80 p-1 rounded-lg">
                                 <span class="text-[7px] text-slate-400 block">Stores</span>
                                 <span class="text-[9px] font-bold text-[#4b55c8]">{{ $stats['total_stores'] ?: '1,248' }}</span>
                             </div>
-                            <div class="bg-emerald-50/70 p-1 rounded-lg">
+                            <div class="bg-blue-50/80 p-1 rounded-lg">
                                 <span class="text-[7px] text-slate-400 block">Active</span>
-                                <span class="text-[9px] font-bold text-emerald-600">{{ $stats['active_stores'] ?: '1,186' }}</span>
+                                <span class="text-[9px] font-bold text-[#4b55c8]">{{ $stats['active_stores'] ?: '1,186' }}</span>
                             </div>
-                            <div class="bg-purple-50/70 p-1 rounded-lg">
+                            <div class="bg-blue-50/80 p-1 rounded-lg">
                                 <span class="text-[7px] text-slate-400 block">Revenue</span>
-                                <span class="text-[9px] font-bold text-purple-600">₹8.4L</span>
+                                <span class="text-[9px] font-bold text-[#4b55c8]">₹8.4L</span>
                             </div>
                         </div>
                         <!-- Mini Progress Line -->
@@ -66,7 +66,7 @@
                         <div class="text-3xl sm:text-4xl font-black text-[#1e2746] tracking-tight mt-1">
                             {{ $stats['total_stores'] > 0 ? number_format($stats['total_stores']) : '1,248' }}
                         </div>
-                        <div class="flex items-center gap-1.5 text-xs text-emerald-600 font-semibold mt-1">
+                        <div class="flex items-center gap-1.5 text-xs text-[#4b55c8] font-semibold mt-1">
                             <span>+12.5% this month</span>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
                                 {{ $stats['total_revenue'] ? '₹'.number_format($stats['total_revenue']) : '₹8,45,600' }}
                             </span>
                         </div>
-                        <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-700">Platform Scale</span>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-blue-50 text-[#4b55c8] border border-blue-200">Platform Scale</span>
                     </div>
                 </div>
 
@@ -140,7 +140,7 @@
                     
                     <!-- Activity 1 -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-8 h-8 rounded-full bg-[#eef2fd] text-[#4b55c8] flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 text-[#4b55c8] flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         </div>
                         <div>
@@ -151,7 +151,7 @@
 
                     <!-- Activity 2 -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 text-[#4b55c8] flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
                         </div>
                         <div>
@@ -162,7 +162,7 @@
 
                     <!-- Activity 3 -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 text-[#4b55c8] flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                         <div>
@@ -173,7 +173,7 @@
 
                     <!-- Activity 4 -->
                     <div class="relative flex items-start gap-4">
-                        <div class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
+                        <div class="w-8 h-8 rounded-full bg-blue-50 text-[#4b55c8] flex items-center justify-center z-10 flex-shrink-0 shadow-sm border border-white">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         </div>
                         <div>
@@ -227,15 +227,15 @@
                 <!-- Chart Legend -->
                 <div class="flex items-center justify-center gap-5 pt-3 border-t border-slate-100 text-[11px] text-[#64748b] font-medium">
                     <div class="flex items-center gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#7da4f8]"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#93c5fd]"></span>
                         <span>New Stores</span>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#4b55c8]"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#2563eb]"></span>
                         <span>Active Stores</span>
                     </div>
                     <div class="flex items-center gap-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-[#b8c9fb]"></span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#bfdbfe]"></span>
                         <span>Revenue</span>
                     </div>
                 </div>
@@ -256,19 +256,19 @@
                 <div class="space-y-2 pt-2 border-t border-slate-100 text-xs font-medium">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#4b55c8]"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#1e40af]"></span>
                             <span class="text-[#64748b]">Basic</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#7d8fe8]"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#2563eb]"></span>
                             <span class="text-[#64748b]">Pro</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#9562e8]"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#60a5fa]"></span>
                             <span class="text-[#64748b]">Premium</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-[#c3ceee]"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-[#bfdbfe]"></span>
                             <span class="text-[#64748b]">Trial</span>
                         </div>
                     </div>
@@ -294,7 +294,7 @@
                     
                     <!-- 1. Add New Store -->
                     <a href="{{ route('super-admin.stores.create') }}" class="p-3 rounded-2xl bg-[#f8faff] hover:bg-[#eef2fd] border border-slate-100 hover:border-[#4b55c8]/30 transition text-center flex flex-col items-center justify-center gap-2 group">
-                        <div class="w-9 h-9 rounded-xl bg-[#eef2fd] text-[#4b55c8] flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-[#4b55c8] flex items-center justify-center group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         </div>
                         <span class="text-xs font-bold text-[#1e2746]">Add New Store</span>
@@ -302,7 +302,7 @@
 
                     <!-- 2. Add Store Owner -->
                     <a href="{{ route('super-admin.store-owners.create') }}" class="p-3 rounded-2xl bg-[#f8faff] hover:bg-[#eef2fd] border border-slate-100 hover:border-[#4b55c8]/30 transition text-center flex flex-col items-center justify-center gap-2 group">
-                        <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-[#4b55c8] flex items-center justify-center group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
                         </div>
                         <span class="text-xs font-bold text-[#1e2746]">Add Store Owner</span>
@@ -310,7 +310,7 @@
 
                     <!-- 3. Create Subscription Plan -->
                     <a href="{{ route('super-admin.subscriptions.plans.create') }}" class="p-3 rounded-2xl bg-[#f8faff] hover:bg-[#eef2fd] border border-slate-100 hover:border-[#4b55c8]/30 transition text-center flex flex-col items-center justify-center gap-2 cursor-pointer group">
-                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-[#4b55c8] flex items-center justify-center group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         </div>
                         <span class="text-xs font-bold text-[#1e2746]">Create Subscription Plan</span>
@@ -318,7 +318,7 @@
 
                     <!-- 4. View Reports -->
                     <div class="p-3 rounded-2xl bg-[#f8faff] hover:bg-[#eef2fd] border border-slate-100 transition text-center flex flex-col items-center justify-center gap-2 cursor-pointer group">
-                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <div class="w-9 h-9 rounded-xl bg-blue-50 text-[#4b55c8] flex items-center justify-center group-hover:scale-105 transition-transform">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                         </div>
                         <span class="text-xs font-bold text-[#1e2746]">View Reports</span>
@@ -334,19 +334,19 @@
                 <div class="space-y-3 text-xs">
                     <div class="flex items-center justify-between py-1">
                         <span class="font-medium text-[#475569]">Application Server</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Operational</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#4b55c8] border border-blue-200">Operational</span>
                     </div>
                     <div class="flex items-center justify-between py-1">
                         <span class="font-medium text-[#475569]">Database</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Operational</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#4b55c8] border border-blue-200">Operational</span>
                     </div>
                     <div class="flex items-center justify-between py-1">
                         <span class="font-medium text-[#475569]">Payment Gateway</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Operational</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#4b55c8] border border-blue-200">Operational</span>
                     </div>
                     <div class="flex items-center justify-between py-1">
                         <span class="font-medium text-[#475569]">API Services</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Operational</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-blue-50 text-[#4b55c8] border border-blue-200">Operational</span>
                     </div>
                 </div>
             </div>
@@ -384,7 +384,7 @@
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-4 py-3.5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center font-bold text-xs">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-50 text-[#4b55c8] border border-blue-100 flex items-center justify-center font-bold text-xs">
                                         {{ substr($store->name, 0, 2) }}
                                     </div>
                                     <div>
@@ -405,11 +405,11 @@
                             </td>
                             <td class="px-4 py-3.5 text-slate-600">{{ $store->city }}, {{ $store->state }}</td>
                             <td class="px-4 py-3.5">
-                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-600">Pro</span>
+                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-[#4b55c8]">Pro</span>
                             </td>
                             <td class="px-4 py-3.5">
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">
-                                    {{ $store->status->value }}
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border {{ $store->status->badgeClasses() }}">
+                                    {{ $store->status->label() }}
                                 </span>
                             </td>
                             <td class="px-4 py-3.5 text-slate-500 font-mono text-[11px]">
@@ -426,7 +426,7 @@
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-4 py-3.5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center font-bold text-xs">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-50 text-[#4b55c8] border border-blue-100 flex items-center justify-center font-bold text-xs">
                                         ➕
                                     </div>
                                     <span class="font-bold text-[#1e2746]">City Care Pharmacy</span>
@@ -440,10 +440,10 @@
                             </td>
                             <td class="px-4 py-3.5 text-slate-600">Lucknow</td>
                             <td class="px-4 py-3.5">
-                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-600">Pro</span>
+                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-[#4b55c8]">Pro</span>
                             </td>
                             <td class="px-4 py-3.5">
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Active</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                             </td>
                             <td class="px-4 py-3.5 text-slate-500 font-mono text-[11px]">Jun 20, 2026</td>
                             <td class="px-4 py-3.5 text-right">
@@ -454,7 +454,7 @@
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-4 py-3.5">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center font-bold text-xs">
+                                    <div class="w-8 h-8 rounded-xl bg-blue-50 text-[#4b55c8] border border-blue-100 flex items-center justify-center font-bold text-xs">
                                         🏥
                                     </div>
                                     <span class="font-bold text-[#1e2746]">MedPlus Pharmacy</span>
@@ -468,10 +468,10 @@
                             </td>
                             <td class="px-4 py-3.5 text-slate-600">Varanasi</td>
                             <td class="px-4 py-3.5">
-                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700">Premium</span>
+                                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 text-[#4b55c8]">Premium</span>
                             </td>
                             <td class="px-4 py-3.5">
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200">Active</span>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                             </td>
                             <td class="px-4 py-3.5 text-slate-500 font-mono text-[11px]">Jun 20, 2026</td>
                             <td class="px-4 py-3.5 text-right">
@@ -494,7 +494,7 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // 1. Platform Growth Chart
+        // 1. Platform Growth Chart (Blue tones)
         const growthCtx = document.getElementById('growthChart')?.getContext('2d');
         if (growthCtx) {
             new Chart(growthCtx, {
@@ -505,8 +505,8 @@
                         {
                             label: 'Revenue',
                             data: [80, 20, 170, 40, 220],
-                            borderColor: '#7d90ea',
-                            backgroundColor: 'rgba(125, 144, 234, 0.15)',
+                            borderColor: '#93c5fd',
+                            backgroundColor: 'rgba(147, 197, 253, 0.2)',
                             fill: true,
                             tension: 0.4,
                             borderWidth: 2.5,
@@ -516,8 +516,8 @@
                         {
                             label: 'Active Stores',
                             data: [30, 90, 130, 95, 180],
-                            borderColor: '#4b55c8',
-                            backgroundColor: 'rgba(75, 85, 200, 0.25)',
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.25)',
                             fill: true,
                             tension: 0.4,
                             borderWidth: 2.5,
@@ -548,7 +548,7 @@
             });
         }
 
-        // 2. Subscription Donut Chart
+        // 2. Subscription Donut Chart (Blue & White palette)
         const donutCtx = document.getElementById('subscriptionDonutChart')?.getContext('2d');
         if (donutCtx) {
             new Chart(donutCtx, {
@@ -558,10 +558,10 @@
                     datasets: [{
                         data: [45, 30, 15, 10],
                         backgroundColor: [
-                            '#4b55c8',
-                            '#7d8fe8',
-                            '#9562e8',
-                            '#dbe4fb'
+                            '#1e40af',
+                            '#2563eb',
+                            '#60a5fa',
+                            '#bfdbfe'
                         ],
                         borderWidth: 0,
                         hoverOffset: 4
