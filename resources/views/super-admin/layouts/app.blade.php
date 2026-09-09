@@ -60,10 +60,10 @@
         }
     </style>
 </head>
-<body class="min-h-screen bg-app-shell text-slate-800 antialiased p-3 sm:p-5 lg:p-6 flex flex-col selection:bg-[#4b55c8] selection:text-white">
+<body class="h-screen w-screen bg-[#f8faff] text-slate-800 antialiased flex flex-col overflow-hidden selection:bg-[#4b55c8] selection:text-white">
 
-    <!-- Main Outer Rounded Container Card Matching Mockup -->
-    <div class="w-full max-w-[1520px] mx-auto bg-white rounded-3xl shadow-[0_20px_60px_-15px_rgba(28,38,94,0.25)] border border-white/60 flex h-[calc(100vh-24px)] sm:h-[calc(100vh-40px)] overflow-hidden relative">
+    <!-- Full Screen Edge-to-Edge Dashboard Container -->
+    <div class="w-full h-full flex overflow-hidden relative">
 
         <!-- Mobile Sidebar Backdrop -->
         <div id="sidebarBackdrop" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-40 hidden lg:hidden transition-opacity"></div>
