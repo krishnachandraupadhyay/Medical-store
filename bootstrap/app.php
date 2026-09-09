@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\CheckMaintenanceMode;
+use App\Http\Middleware\StoreOwnerMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -14,8 +15,22 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectGuestsTo(fn (Request $request) => route('super-admin.login'));
-        $middleware->redirectUsersTo(fn (Request $request) => route('super-admin.dashboard'));
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('store') || $request->is('store/*')) {
+                return route('store.login');
+            }
+
+            return route('super-admin.login');
+        });
+
+        $middleware->redirectUsersTo(function (Request $request) {
+            $user = $request->user();
+            if ($user && $user->isStoreOwner()) {
+                return route('store.dashboard');
+            }
+
+            return route('super-admin.dashboard');
+        });
 
         $middleware->web(append: [
             CheckMaintenanceMode::class,
@@ -23,6 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'super_admin' => SuperAdminMiddleware::class,
+            'store_owner' => StoreOwnerMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

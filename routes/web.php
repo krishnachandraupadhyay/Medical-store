@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Store\AuthController as StoreAuthController;
+use App\Http\Controllers\Store\DashboardController as StoreDashboardController;
 use App\Http\Controllers\SuperAdmin\AuditLogController as SuperAdminAuditLogController;
 use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
@@ -107,5 +109,24 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
         // Audit Logs Routes (Phase 11)
         Route::get('/audit-logs', [SuperAdminAuditLogController::class, 'index'])->name('audit-logs.index');
         Route::get('/audit-logs/{auditLog}', [SuperAdminAuditLogController::class, 'show'])->name('audit-logs.show');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Store Owner Authentication & Protected Routes (Phase 12)
+|--------------------------------------------------------------------------
+*/
+Route::prefix('store')->name('store.')->group(function () {
+    // Guest Store Owner routes
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', [StoreAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [StoreAuthController::class, 'login'])->name('login.submit');
+    });
+
+    // Protected Store Owner routes
+    Route::middleware(['auth', 'store_owner'])->group(function () {
+        Route::get('/dashboard', [StoreDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [StoreAuthController::class, 'logout'])->name('logout');
     });
 });
