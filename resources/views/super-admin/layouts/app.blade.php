@@ -156,13 +156,32 @@
                         </div>
                     </a>
 
-                    <!-- Reports -->
-                    <div class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium text-[#94a3b8] hover:bg-slate-50 cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-[#94a3b8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                            </svg>
-                            <span>Reports</span>
+                    <!-- Reports Section -->
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-semibold {{ request()->routeIs('super-admin.reports.*') ? 'text-[#4b55c8]' : 'text-[#64748b]' }}">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 {{ request()->routeIs('super-admin.reports.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                </svg>
+                                <span>Reports & Analytics</span>
+                            </div>
+                        </div>
+                        <div class="pl-8 pr-2 space-y-1">
+                            <a href="{{ route('super-admin.reports.overview') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.reports.overview*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Overview</span>
+                            </a>
+                            <a href="{{ route('super-admin.reports.stores') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.reports.stores*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Store Reports</span>
+                            </a>
+                            <a href="{{ route('super-admin.reports.subscriptions') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.reports.subscriptions*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Subscription Reports</span>
+                            </a>
+                            <a href="{{ route('super-admin.reports.payments') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.reports.payments*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Payment Reports</span>
+                            </a>
+                            <a href="{{ route('super-admin.reports.expiring-subscriptions') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.reports.expiring-subscriptions*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Expiring Subscriptions</span>
+                            </a>
                         </div>
                     </div>
 

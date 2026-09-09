@@ -3,6 +3,7 @@
 use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
 use App\Http\Controllers\SuperAdmin\PaymentController as SuperAdminPaymentController;
+use App\Http\Controllers\SuperAdmin\ReportController;
 use App\Http\Controllers\SuperAdmin\StoreController as SuperAdminStoreController;
 use App\Http\Controllers\SuperAdmin\StoreOwnerController as SuperAdminStoreOwnerController;
 use App\Http\Controllers\SuperAdmin\StoreSubscriptionController as SuperAdminStoreSubscriptionController;
@@ -78,5 +79,18 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
         Route::get('/payments/{payment}/edit', [SuperAdminPaymentController::class, 'edit'])->name('payments.edit');
         Route::put('/payments/{payment}', [SuperAdminPaymentController::class, 'update'])->name('payments.update');
         Route::patch('/payments/{payment}/status', [SuperAdminPaymentController::class, 'updateStatus'])->name('payments.update-status');
+
+        // Reports & Analytics Routes (Phase 8)
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/', [ReportController::class, 'overview'])->name('overview');
+            Route::get('/overview', [ReportController::class, 'overview'])->name('overview.alias');
+            Route::get('/stores', [ReportController::class, 'stores'])->name('stores');
+            Route::get('/stores/export', [ReportController::class, 'exportStores'])->name('stores.export');
+            Route::get('/subscriptions', [ReportController::class, 'subscriptions'])->name('subscriptions');
+            Route::get('/subscriptions/export', [ReportController::class, 'exportSubscriptions'])->name('subscriptions.export');
+            Route::get('/payments', [ReportController::class, 'payments'])->name('payments');
+            Route::get('/payments/export', [ReportController::class, 'exportPayments'])->name('payments.export');
+            Route::get('/expiring-subscriptions', [ReportController::class, 'expiringSubscriptions'])->name('expiring-subscriptions');
+        });
     });
 });
