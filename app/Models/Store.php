@@ -95,6 +95,14 @@ class Store extends Model
     }
 
     /**
+     * Get all targeted notifications for this store.
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class, 'store_id')->orderBy('created_at', 'desc');
+    }
+
+    /**
      * Get the currently active subscription for this store.
      */
     public function activeSubscription(): HasOne

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
+use App\Http\Controllers\SuperAdmin\NotificationController;
 use App\Http\Controllers\SuperAdmin\PaymentController as SuperAdminPaymentController;
 use App\Http\Controllers\SuperAdmin\ReportController;
 use App\Http\Controllers\SuperAdmin\StoreController as SuperAdminStoreController;
@@ -92,5 +93,9 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
             Route::get('/payments/export', [ReportController::class, 'exportPayments'])->name('payments.export');
             Route::get('/expiring-subscriptions', [ReportController::class, 'expiringSubscriptions'])->name('expiring-subscriptions');
         });
+
+        // Notification Management Routes (Phase 9)
+        Route::resource('notifications', NotificationController::class);
+        Route::post('notifications/{notification}/cancel', [NotificationController::class, 'cancel'])->name('notifications.cancel');
     });
 });
