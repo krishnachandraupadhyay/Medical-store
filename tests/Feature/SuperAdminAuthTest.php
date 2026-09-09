@@ -45,7 +45,7 @@ class SuperAdminAuthTest extends TestCase
 
         $dashboardResponse = $this->actingAs($superAdmin)->get('/super-admin/dashboard');
         $dashboardResponse->assertStatus(200);
-        $dashboardResponse->assertSee('Super Admin Authentication Active');
+        $dashboardResponse->assertSee('System Dashboard');
         $dashboardResponse->assertSee('SUPER_ADMIN');
     }
 
