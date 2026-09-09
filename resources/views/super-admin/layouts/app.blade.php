@@ -98,7 +98,7 @@
                 <!-- Navigation Links List -->
                 <nav class="px-4 py-5 space-y-1.5 overflow-y-auto max-h-[calc(100vh-210px)]">
                     
-                    <!-- Dashboard -->
+                    <!-- 1. Dashboard (Direct Link) -->
                     <a href="{{ route('super-admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.dashboard') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <svg class="w-5 h-5 {{ request()->routeIs('super-admin.dashboard') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
@@ -106,69 +106,125 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <!-- Stores -->
-                    <a href="{{ route('super-admin.stores.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.stores.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.stores.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                            <span>Stores</span>
-                        </div>
-                    </a>
-
-                    <!-- Store Owners -->
-                    <a href="{{ route('super-admin.store-owners.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.store-owners.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.store-owners.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                            </svg>
-                            <span>Store Owners</span>
-                        </div>
-                    </a>
-
-                    <!-- Subscriptions Section -->
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-semibold {{ request()->routeIs('super-admin.subscriptions.*') ? 'text-[#4b55c8]' : 'text-[#64748b]' }}">
+                    <!-- 2. Stores Dropdown -->
+                    @php $isStoresActive = request()->routeIs('super-admin.stores.*'); @endphp
+                    <div class="sidebar-dropdown-group">
+                        <button type="button" data-dropdown-toggle="storesDropdown" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition cursor-pointer {{ $isStoresActive ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                             <div class="flex items-center gap-3">
-                                <svg class="w-5 h-5 {{ request()->routeIs('super-admin.subscriptions.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                <svg class="w-5 h-5 {{ $isStoresActive ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                 </svg>
-                                <span>Subscriptions</span>
+                                <span>Stores</span>
                             </div>
-                        </div>
-                        <div class="pl-8 pr-2 space-y-1">
-                            <a href="{{ route('super-admin.subscriptions.plans.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.plans.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                                <span>Plans</span>
+                            <svg class="w-4 h-4 transition-transform duration-200 dropdown-arrow {{ $isStoresActive ? 'rotate-180 text-[#4b55c8]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div id="storesDropdown" class="dropdown-menu {{ $isStoresActive ? '' : 'hidden' }} mt-1 ml-4 pl-3 border-l-2 border-slate-200/80 space-y-1 py-1">
+                            <a href="{{ route('super-admin.stores.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.stores.index') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>All Stores</span>
                             </a>
-                            <a href="{{ route('super-admin.subscriptions.stores.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.stores.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                                <span>Store Subscriptions</span>
+                            <a href="{{ route('super-admin.stores.create') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.stores.create') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>+ Add Store</span>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Payments -->
-                    <a href="{{ route('super-admin.payments.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.payments.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.payments.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                            </svg>
-                            <span>Payments</span>
-                        </div>
-                    </a>
-
-                    <!-- Reports Section -->
-                    <div class="space-y-1">
-                        <div class="flex items-center justify-between px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-semibold {{ request()->routeIs('super-admin.reports.*') ? 'text-[#4b55c8]' : 'text-[#64748b]' }}">
+                    <!-- 3. Store Owners Dropdown -->
+                    @php $isOwnersActive = request()->routeIs('super-admin.store-owners.*'); @endphp
+                    <div class="sidebar-dropdown-group">
+                        <button type="button" data-dropdown-toggle="ownersDropdown" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition cursor-pointer {{ $isOwnersActive ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                             <div class="flex items-center gap-3">
-                                <svg class="w-5 h-5 {{ request()->routeIs('super-admin.reports.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 {{ $isOwnersActive ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                                <span>Store Owners</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200 dropdown-arrow {{ $isOwnersActive ? 'rotate-180 text-[#4b55c8]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div id="ownersDropdown" class="dropdown-menu {{ $isOwnersActive ? '' : 'hidden' }} mt-1 ml-4 pl-3 border-l-2 border-slate-200/80 space-y-1 py-1">
+                            <a href="{{ route('super-admin.store-owners.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.store-owners.index') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>All Owners</span>
+                            </a>
+                            <a href="{{ route('super-admin.store-owners.create') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.store-owners.create') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>+ Add Owner</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 4. Subscriptions Dropdown -->
+                    @php $isSubsActive = request()->routeIs('super-admin.subscriptions.*'); @endphp
+                    <div class="sidebar-dropdown-group">
+                        <button type="button" data-dropdown-toggle="subsDropdown" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition cursor-pointer {{ $isSubsActive ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 {{ $isSubsActive ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>Subscriptions</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200 dropdown-arrow {{ $isSubsActive ? 'rotate-180 text-[#4b55c8]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div id="subsDropdown" class="dropdown-menu {{ $isSubsActive ? '' : 'hidden' }} mt-1 ml-4 pl-3 border-l-2 border-slate-200/80 space-y-1 py-1">
+                            <a href="{{ route('super-admin.subscriptions.plans.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.plans.index') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Subscription Plans</span>
+                            </a>
+                            <a href="{{ route('super-admin.subscriptions.plans.create') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.plans.create') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>+ Create Plan</span>
+                            </a>
+                            <a href="{{ route('super-admin.subscriptions.stores.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.stores.index') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>Store Subscriptions</span>
+                            </a>
+                            <a href="{{ route('super-admin.subscriptions.stores.create') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.subscriptions.stores.create') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>+ Assign Subscription</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 5. Payments Dropdown -->
+                    @php $isPaymentsActive = request()->routeIs('super-admin.payments.*'); @endphp
+                    <div class="sidebar-dropdown-group">
+                        <button type="button" data-dropdown-toggle="paymentsDropdown" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition cursor-pointer {{ $isPaymentsActive ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 {{ $isPaymentsActive ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                </svg>
+                                <span>Payments</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200 dropdown-arrow {{ $isPaymentsActive ? 'rotate-180 text-[#4b55c8]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div id="paymentsDropdown" class="dropdown-menu {{ $isPaymentsActive ? '' : 'hidden' }} mt-1 ml-4 pl-3 border-l-2 border-slate-200/80 space-y-1 py-1">
+                            <a href="{{ route('super-admin.payments.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.payments.index') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>All Payments</span>
+                            </a>
+                            <a href="{{ route('super-admin.payments.create') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.payments.create') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>+ Record Payment</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 6. Reports & Analytics Dropdown -->
+                    @php $isReportsActive = request()->routeIs('super-admin.reports.*'); @endphp
+                    <div class="sidebar-dropdown-group">
+                        <button type="button" data-dropdown-toggle="reportsDropdown" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition cursor-pointer {{ $isReportsActive ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 {{ $isReportsActive ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                                 </svg>
                                 <span>Reports & Analytics</span>
                             </div>
-                        </div>
-                        <div class="pl-8 pr-2 space-y-1">
+                            <svg class="w-4 h-4 transition-transform duration-200 dropdown-arrow {{ $isReportsActive ? 'rotate-180 text-[#4b55c8]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <div id="reportsDropdown" class="dropdown-menu {{ $isReportsActive ? '' : 'hidden' }} mt-1 ml-4 pl-3 border-l-2 border-slate-200/80 space-y-1 py-1">
                             <a href="{{ route('super-admin.reports.overview') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.reports.overview*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                                <span>Overview</span>
+                                <span>System Overview</span>
                             </a>
                             <a href="{{ route('super-admin.reports.stores') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.reports.stores*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                                 <span>Store Reports</span>
@@ -185,17 +241,31 @@
                         </div>
                     </div>
 
-                    <!-- Notifications -->
-                    <a href="{{ route('super-admin.notifications.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.notifications.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.notifications.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                    <!-- 7. Notifications Dropdown -->
+                    @php $isNotifsActive = request()->routeIs('super-admin.notifications.*'); @endphp
+                    <div class="sidebar-dropdown-group">
+                        <button type="button" data-dropdown-toggle="notifsDropdown" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition cursor-pointer {{ $isNotifsActive ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                            <div class="flex items-center gap-3">
+                                <svg class="w-5 h-5 {{ $isNotifsActive ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                </svg>
+                                <span>Notifications</span>
+                            </div>
+                            <svg class="w-4 h-4 transition-transform duration-200 dropdown-arrow {{ $isNotifsActive ? 'rotate-180 text-[#4b55c8]' : 'text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                             </svg>
-                            <span>Notifications</span>
+                        </button>
+                        <div id="notifsDropdown" class="dropdown-menu {{ $isNotifsActive ? '' : 'hidden' }} mt-1 ml-4 pl-3 border-l-2 border-slate-200/80 space-y-1 py-1">
+                            <a href="{{ route('super-admin.notifications.index') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.notifications.index') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>All Notifications</span>
+                            </a>
+                            <a href="{{ route('super-admin.notifications.create') }}" class="flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold transition {{ request()->routeIs('super-admin.notifications.create') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                                <span>+ Create Notification</span>
+                            </a>
                         </div>
-                    </a>
+                    </div>
 
-                    <!-- Settings -->
+                    <!-- 8. Settings (Direct Link) -->
                     <a href="{{ route('super-admin.settings.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.settings.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 {{ request()->routeIs('super-admin.settings.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -206,7 +276,7 @@
                         </div>
                     </a>
 
-                    <!-- Audit Logs -->
+                    <!-- 9. Audit Logs (Direct Link) -->
                     <a href="{{ route('super-admin.audit-logs.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('super-admin.audit-logs.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 {{ request()->routeIs('super-admin.audit-logs.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,7 +286,7 @@
                         </div>
                     </a>
 
-                    <!-- Logout -->
+                    <!-- 10. Logout -->
                     <form action="{{ route('super-admin.logout') }}" method="POST" class="pt-2">
                         @csrf
                         <button type="submit" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium text-[#64748b] hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer">
@@ -358,7 +428,7 @@
         </div>
     </div>
 
-    <!-- Mobile Drawer Script -->
+    <!-- Mobile Drawer & Sidebar Dropdown Script -->
     <script>
         const openBtn = document.getElementById('openSidebarBtn');
         const closeBtn = document.getElementById('closeSidebarBtn');
@@ -378,6 +448,27 @@
         openBtn?.addEventListener('click', () => toggleSidebar(true));
         closeBtn?.addEventListener('click', () => toggleSidebar(false));
         backdrop?.addEventListener('click', () => toggleSidebar(false));
+
+        // Collapsible Sidebar Dropdowns
+        document.querySelectorAll('[data-dropdown-toggle]').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('data-dropdown-toggle');
+                const targetMenu = document.getElementById(targetId);
+                const arrow = this.querySelector('.dropdown-arrow');
+
+                if (targetMenu) {
+                    const isCurrentlyHidden = targetMenu.classList.contains('hidden');
+                    if (isCurrentlyHidden) {
+                        targetMenu.classList.remove('hidden');
+                        arrow?.classList.add('rotate-180');
+                    } else {
+                        targetMenu.classList.add('hidden');
+                        arrow?.classList.remove('rotate-180');
+                    }
+                }
+            });
+        });
     </script>
     @stack('scripts')
 </body>

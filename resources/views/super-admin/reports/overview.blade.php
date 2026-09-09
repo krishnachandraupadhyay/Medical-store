@@ -13,64 +13,119 @@
             <p class="text-xs sm:text-sm text-[#64748b] mt-1">Platform-wide statistics, tenant growth, subscription lifecycle, and revenue analytics.</p>
         </div>
 
-        <!-- Quick Links to Specialized Reports -->
-        <div class="flex flex-wrap items-center gap-2">
-            <a href="{{ route('super-admin.reports.stores') }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-[#4b55c8] text-[#1e2746] font-semibold text-xs transition shadow-sm">
-                Store Reports
-            </a>
-            <a href="{{ route('super-admin.reports.subscriptions') }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-[#4b55c8] text-[#1e2746] font-semibold text-xs transition shadow-sm">
-                Subscription Reports
-            </a>
-            <a href="{{ route('super-admin.reports.payments') }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 hover:border-[#4b55c8] text-[#1e2746] font-semibold text-xs transition shadow-sm">
-                Payment Reports
-            </a>
-            <a href="{{ route('super-admin.reports.expiring-subscriptions') }}" class="px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 hover:bg-amber-100 text-amber-800 font-bold text-xs transition shadow-sm">
-                Expiring ({{ $expiringSubscriptions->count() }})
-            </a>
+        <!-- Specialized Reports Navigation Dropdown -->
+        <div class="flex items-center gap-2.5">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider hidden sm:inline">REPORT MODULES:</span>
+            <div class="relative min-w-[220px]">
+                <select
+                    onchange="if (this.value) window.location.href = this.value;"
+                    class="w-full appearance-none pl-3.5 pr-8 py-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl text-xs font-bold text-[#1e2746] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4b55c8]/20 focus:border-[#4b55c8] transition shadow-sm cursor-pointer"
+                >
+                    <option value="{{ route('super-admin.reports.overview') }}" selected>
+                        📊 System Overview & Analytics
+                    </option>
+                    <option value="{{ route('super-admin.reports.stores') }}">
+                        🏪 Store Reports
+                    </option>
+                    <option value="{{ route('super-admin.reports.subscriptions') }}">
+                        💳 Subscription Reports
+                    </option>
+                    <option value="{{ route('super-admin.reports.payments') }}">
+                        💰 Payment Reports
+                    </option>
+                    <option value="{{ route('super-admin.reports.expiring-subscriptions') }}">
+                        ⚠️ Expiring Subscriptions ({{ $expiringSubscriptions->count() }})
+                    </option>
+                </select>
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Date Range Filter Bar -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-sm space-y-3">
-        <form action="{{ route('super-admin.reports.overview') }}" method="GET" class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <!-- Date Range Filter Bar (Dropdown Selector) -->
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-sm">
+        <form action="{{ route('super-admin.reports.overview') }}" method="GET" class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 flex-wrap">
             
-            <!-- Quick Presets -->
-            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none text-xs font-semibold">
-                <span class="text-slate-400 mr-1 text-[11px] font-bold uppercase tracking-wider">Period:</span>
-                @php
-                    $presets = [
-                        'today' => 'Today',
-                        'last_7_days' => 'Last 7 Days',
-                        'last_30_days' => 'Last 30 Days',
-                        'this_month' => 'This Month',
-                        'last_month' => 'Last Month',
-                        'this_year' => 'This Year',
-                        'all_time' => 'All Time',
-                    ];
-                @endphp
-                @foreach ($presets as $key => $label)
-                    <a href="{{ route('super-admin.reports.overview', ['date_range' => $key]) }}"
-                       class="px-3 py-1.5 rounded-xl transition whitespace-nowrap {{ $preset === $key ? 'bg-blue-50 text-[#4b55c8] border border-blue-200 shadow-sm' : 'text-slate-600 hover:text-[#1e2746] hover:bg-slate-100' }}">
-                        {{ $label }}
-                    </a>
-                @endforeach
+            <!-- Left: Period Dropdown Selector -->
+            <div class="flex items-center gap-3 flex-wrap">
+                <div class="flex items-center gap-2.5">
+                    <span class="text-slate-500 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-[#4b55c8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        PERIOD:
+                    </span>
+                    
+                    @php
+                        $presets = [
+                            'today' => 'Today',
+                            'last_7_days' => 'Last 7 Days',
+                            'last_30_days' => 'Last 30 Days',
+                            'this_month' => 'This Month',
+                            'last_month' => 'Last Month',
+                            'this_year' => 'This Year',
+                            'all_time' => 'All Time',
+                            'custom' => 'Custom Date Range...',
+                        ];
+                    @endphp
+
+                    <div class="relative min-w-[180px]">
+                        <select
+                            id="periodSelectDropdown"
+                            name="date_range"
+                            onchange="handlePeriodDropdownChange(this)"
+                            class="w-full appearance-none pl-3.5 pr-8 py-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-2xl text-xs font-bold text-[#1e2746] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4b55c8]/20 focus:border-[#4b55c8] transition cursor-pointer"
+                        >
+                            @foreach ($presets as $key => $label)
+                                <option value="{{ $key }}" {{ $preset === $key ? 'selected' : '' }}>
+                                    {{ $label }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Date Window Indicator Badge -->
+                <div class="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50/80 border border-blue-100 text-[11px] font-semibold text-[#4b55c8]">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#4b55c8]"></span>
+                    <span>
+                        @if ($from && $to)
+                            {{ $from->format('d M Y') }} – {{ $to->format('d M Y') }}
+                        @else
+                            All Platform History
+                        @endif
+                    </span>
+                </div>
             </div>
 
-            <!-- Custom Date Inputs -->
-            <div class="flex items-center gap-2 text-xs">
-                <input type="hidden" name="date_range" value="custom">
+            <!-- Right: Custom Date Pickers (Active when custom selected) -->
+            <div id="customDatesContainer" class="{{ $preset === 'custom' ? 'flex' : 'hidden' }} items-center gap-2 text-xs flex-wrap">
                 <input type="date" name="date_from" value="{{ $from?->format('Y-m-d') }}" class="px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4b55c8]" />
                 <span class="text-slate-400">to</span>
                 <input type="date" name="date_to" value="{{ $to?->format('Y-m-d') }}" class="px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#4b55c8]" />
-                <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-[#4b55c8] hover:bg-[#3f49b8] text-white font-bold text-xs shadow-sm transition">
+                <button type="submit" class="px-3.5 py-1.5 rounded-xl bg-[#4b55c8] hover:bg-[#3f49b8] text-white font-bold text-xs shadow-sm transition cursor-pointer">
                     Apply
                 </button>
-                @if ($preset !== 'this_month')
-                    <a href="{{ route('super-admin.reports.overview') }}" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs transition" title="Reset to Current Month">
-                        Reset
-                    </a>
-                @endif
             </div>
+
+            <!-- Quick Reset Button -->
+            @if ($preset !== 'this_month')
+                <a href="{{ route('super-admin.reports.overview') }}" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs transition flex items-center gap-1.5" title="Reset to Current Month">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Reset</span>
+                </a>
+            @endif
 
         </form>
     </div>
@@ -455,6 +510,23 @@
             });
         }
     });
+
+    // Global handler for Period dropdown selection
+    function handlePeriodDropdownChange(selectElement) {
+        const customContainer = document.getElementById('customDatesContainer');
+        if (selectElement.value === 'custom') {
+            if (customContainer) {
+                customContainer.classList.remove('hidden');
+                customContainer.classList.add('flex');
+            }
+        } else {
+            if (customContainer) {
+                customContainer.classList.add('hidden');
+                customContainer.classList.remove('flex');
+            }
+            window.location.href = '{{ route("super-admin.reports.overview") }}?date_range=' + selectElement.value;
+        }
+    }
 </script>
 @endpush
 @endsection
