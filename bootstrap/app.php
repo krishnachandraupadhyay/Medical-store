@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckMaintenanceMode;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn (Request $request) => route('super-admin.login'));
         $middleware->redirectUsersTo(fn (Request $request) => route('super-admin.dashboard'));
+
+        $middleware->web(append: [
+            CheckMaintenanceMode::class,
+        ]);
 
         $middleware->alias([
             'super_admin' => SuperAdminMiddleware::class,

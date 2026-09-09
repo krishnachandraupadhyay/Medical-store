@@ -5,6 +5,7 @@ use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardCo
 use App\Http\Controllers\SuperAdmin\NotificationController;
 use App\Http\Controllers\SuperAdmin\PaymentController as SuperAdminPaymentController;
 use App\Http\Controllers\SuperAdmin\ReportController;
+use App\Http\Controllers\SuperAdmin\SettingController as SuperAdminSettingController;
 use App\Http\Controllers\SuperAdmin\StoreController as SuperAdminStoreController;
 use App\Http\Controllers\SuperAdmin\StoreOwnerController as SuperAdminStoreOwnerController;
 use App\Http\Controllers\SuperAdmin\StoreSubscriptionController as SuperAdminStoreSubscriptionController;
@@ -97,5 +98,9 @@ Route::prefix('super-admin')->name('super-admin.')->group(function () {
         // Notification Management Routes (Phase 9)
         Route::resource('notifications', NotificationController::class);
         Route::post('notifications/{notification}/cancel', [NotificationController::class, 'cancel'])->name('notifications.cancel');
+
+        // System Settings Routes (Phase 10)
+        Route::get('/settings', [SuperAdminSettingController::class, 'index'])->name('settings.index');
+        Route::put('/settings', [SuperAdminSettingController::class, 'update'])->name('settings.update');
     });
 });
