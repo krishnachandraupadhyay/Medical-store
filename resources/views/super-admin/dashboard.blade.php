@@ -247,21 +247,21 @@
                 <span class="text-[9px] font-bold uppercase tracking-wider text-purple-400 bg-purple-500/10 px-1.5 py-0.5 rounded border border-purple-500/20">Active</span>
             </a>
 
-            <!-- Add Store Owner (Coming Soon) -->
-            <button type="button" disabled class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 text-left opacity-75 cursor-not-allowed flex items-center justify-between group">
+            <!-- Add Store Owner (Active Link) -->
+            <a href="{{ route('super-admin.store-owners.create') }}" class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-900 transition flex items-center justify-between group">
                 <div class="flex items-center gap-3">
-                    <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                    <div class="p-2 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 group-hover:scale-105 transition-transform">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
                         </svg>
                     </div>
                     <div>
-                        <p class="text-xs font-bold text-white">Add Store Owner</p>
+                        <p class="text-xs font-bold text-white group-hover:text-indigo-300 transition">Add Store Owner</p>
                         <p class="text-[10px] text-slate-500">Assign store admin</p>
                     </div>
                 </div>
-                <span class="text-[9px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">Soon</span>
-            </button>
+                <span class="text-[9px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 px-1.5 py-0.5 rounded border border-indigo-500/20">Active</span>
+            </a>
 
             <!-- View Subscriptions (Coming Soon) -->
             <button type="button" disabled class="p-3.5 rounded-xl bg-slate-950/60 border border-slate-800 text-left opacity-75 cursor-not-allowed flex items-center justify-between group">

@@ -7,6 +7,7 @@ use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 
@@ -67,6 +68,16 @@ class Store extends Model
     }
 
     /**
+     * Get the primary store owner (first active owner).
+     */
+    public function owner(): HasOne
+    {
+        return $this->hasOne(User::class, 'store_id')
+            ->where('role', UserRole::STORE_OWNER)
+            ->where('is_active', true);
+    }
+
+    /**
      * Check if store is active.
      */
     public function isActive(): bool
@@ -96,7 +107,6 @@ class Store extends Model
     public static function generateUniqueCode(): string
     {
         return DB::transaction(function () {
-            // Get the highest numeric ID or existing codes count including soft-deleted
             $latestStore = self::withTrashed()
                 ->orderByRaw('CAST(SUBSTRING(code, 5) AS UNSIGNED) DESC, id DESC')
                 ->first();

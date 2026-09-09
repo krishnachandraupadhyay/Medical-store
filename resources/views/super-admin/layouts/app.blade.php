@@ -108,7 +108,7 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <!-- Stores (Active Phase 3 Module) -->
+                    <!-- Stores -->
                     <a href="{{ route('super-admin.stores.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('super-admin.stores.*') ? 'bg-gradient-to-r from-teal-500/15 to-emerald-500/10 text-teal-300 border border-teal-500/30' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50' }}">
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 {{ request()->routeIs('super-admin.stores.*') ? 'text-teal-400' : 'text-slate-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -119,16 +119,16 @@
                         <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ request()->routeIs('super-admin.stores.*') ? 'bg-teal-500/20 text-teal-300' : 'bg-slate-800 text-slate-400' }}">Active</span>
                     </a>
 
-                    <!-- Store Owners (Placeholder) -->
-                    <div class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/40 cursor-not-allowed group">
+                    <!-- Store Owners (Active Phase 4 Module) -->
+                    <a href="{{ route('super-admin.store-owners.index') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition {{ request()->routeIs('super-admin.store-owners.*') ? 'bg-gradient-to-r from-teal-500/15 to-emerald-500/10 text-teal-300 border border-teal-500/30' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-500 group-hover:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('super-admin.store-owners.*') ? 'text-teal-400' : 'text-slate-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                             </svg>
                             <span>Store Owners</span>
                         </div>
-                        <span class="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700/50">Soon</span>
-                    </div>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ request()->routeIs('super-admin.store-owners.*') ? 'bg-teal-500/20 text-teal-300' : 'bg-slate-800 text-slate-400' }}">Active</span>
+                    </a>
 
                     <!-- Subscriptions (Placeholder) -->
                     <div class="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:bg-slate-800/40 cursor-not-allowed group">

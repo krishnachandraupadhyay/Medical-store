@@ -121,7 +121,9 @@
                                 </td>
                                 <td class="px-5 py-4 text-slate-400">
                                     @if ($store->owners->isNotEmpty())
-                                        <span class="font-semibold text-slate-200">{{ $store->owners->first()->name }}</span>
+                                        <a href="{{ route('super-admin.store-owners.show', $store->owners->first()) }}" class="font-semibold text-teal-400 hover:text-teal-300 hover:underline">
+                                            {{ $store->owners->first()->name }}
+                                        </a>
                                     @else
                                         <span class="text-slate-500 italic">Not assigned</span>
                                     @endif
