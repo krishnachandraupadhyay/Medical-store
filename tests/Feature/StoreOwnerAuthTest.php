@@ -255,7 +255,7 @@ class StoreOwnerAuthTest extends TestCase
 
         $response->assertOk();
         $response->assertViewIs('store.dashboard');
-        $response->assertSee('Welcome to your Store Dashboard, Rahul Sharma');
+        $response->assertSee($this->activeOwner->name);
         $response->assertSee('Sharma Medical Store');
         $response->assertSee('MED-000001');
     }
