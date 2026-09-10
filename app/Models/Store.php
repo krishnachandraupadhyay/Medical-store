@@ -37,6 +37,7 @@ class Store extends Model
         'license_expiry_date',
         'store_type',
         'status',
+        'settings',
     ];
 
     /**
@@ -49,6 +50,7 @@ class Store extends Model
         return [
             'status' => StoreStatus::class,
             'license_expiry_date' => 'date',
+            'settings' => 'array',
         ];
     }
 
@@ -174,5 +176,47 @@ class Store extends Model
 
             return $candidateCode;
         });
+    }
+
+    /**
+     * Get a store preference setting with fallback default.
+     */
+    public function getSetting(string $key, mixed $default = null): mixed
+    {
+        $settings = $this->settings ?? [];
+
+        return $settings[$key] ?? $default;
+    }
+
+    /**
+     * Get store invoice prefix (default: 'INV').
+     */
+    public function invoicePrefix(): string
+    {
+        return (string) $this->getSetting('invoice_prefix', 'INV');
+    }
+
+    /**
+     * Get store timezone (default: 'Asia/Kolkata').
+     */
+    public function timezone(): string
+    {
+        return (string) $this->getSetting('timezone', 'Asia/Kolkata');
+    }
+
+    /**
+     * Get store currency code (default: 'INR').
+     */
+    public function currency(): string
+    {
+        return (string) $this->getSetting('currency', 'INR');
+    }
+
+    /**
+     * Get store date format (default: 'd-m-Y').
+     */
+    public function dateFormat(): string
+    {
+        return (string) $this->getSetting('date_format', 'd-m-Y');
     }
 }

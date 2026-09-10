@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Store\AuthController as StoreAuthController;
 use App\Http\Controllers\Store\DashboardController as StoreDashboardController;
+use App\Http\Controllers\Store\SettingController as StoreSettingController;
 use App\Http\Controllers\SuperAdmin\AuditLogController as SuperAdminAuditLogController;
 use App\Http\Controllers\SuperAdmin\AuthController as SuperAdminAuthController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperAdminDashboardController;
@@ -128,5 +129,13 @@ Route::prefix('store')->name('store.')->group(function () {
     Route::middleware(['auth', 'store_owner'])->group(function () {
         Route::get('/dashboard', [StoreDashboardController::class, 'index'])->name('dashboard');
         Route::post('/logout', [StoreAuthController::class, 'logout'])->name('logout');
+
+        // Store Profile & Settings Routes (Phase 14)
+        Route::get('/settings', [StoreSettingController::class, 'index'])->name('settings.index');
+        Route::put('/settings/profile', [StoreSettingController::class, 'updateProfile'])->name('settings.update-profile');
+        Route::post('/settings/logo', [StoreSettingController::class, 'updateLogo'])->name('settings.update-logo');
+        Route::delete('/settings/logo', [StoreSettingController::class, 'removeLogo'])->name('settings.remove-logo');
+        Route::put('/settings/account', [StoreSettingController::class, 'updateAccount'])->name('settings.update-account');
+        Route::put('/settings/password', [StoreSettingController::class, 'updatePassword'])->name('settings.update-password');
     });
 });
