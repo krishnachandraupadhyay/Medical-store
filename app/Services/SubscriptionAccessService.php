@@ -134,8 +134,8 @@ class SubscriptionAccessService
         $sub = Subscription::with('plan')
             ->where('store_id', $storeId)
             ->whereIn('status', [SubscriptionStatus::ACTIVE, SubscriptionStatus::TRIAL])
-            ->where('start_date', '<=', $today)
-            ->where('end_date', '>=', $today)
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('end_date', '>=', $today)
             ->latest('id')
             ->first();
 
