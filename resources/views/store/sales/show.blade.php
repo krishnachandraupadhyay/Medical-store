@@ -12,11 +12,11 @@
                 <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {{ $sale->isCompleted() ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($sale->isDraft() ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-slate-100 text-slate-600') }}">
                     {{ ucfirst($sale->status->value) }}
                 </span>
-                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {{ $sale->payment_status?->value === 'paid' ? 'bg-emerald-50 text-emerald-700' : ($sale->payment_status?->value === 'partial' ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700') }}">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-bold {{ $sale->payment_status?->value === 'paid' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : ($sale->payment_status?->value === 'partial' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-rose-50 text-rose-700 border border-rose-200') }}">
                     Payment: {{ ucfirst($sale->payment_status?->value ?? 'unpaid') }}
                 </span>
             </div>
-            <p class="text-xs text-slate-400 mt-1">Sale Date: {{ $sale->sale_date->format('d M Y') }} • Customer: {{ $sale->customer_name ?: 'Walk-in' }}</p>
+            <p class="text-xs text-slate-400 mt-1">Sale Date: {{ $sale->sale_date->format('d M Y') }} • Billed to: {{ $sale->customer_name ?: 'Walk-in' }}</p>
         </div>
 
         <div class="flex items-center gap-2">
@@ -41,23 +41,90 @@
         </div>
     </div>
 
-    <!-- Overview Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+    <!-- Store & Customer Details Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Store Information -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
+                <div class="w-7 h-7 rounded-lg bg-[#4b55c8] text-white flex items-center justify-center font-black text-xs">
+                    Rx
+                </div>
+                <div>
+                    <h3 class="font-extrabold text-sm text-slate-900 leading-none">{{ $store->name }}</h3>
+                    <span class="text-[10px] text-slate-400 font-mono">Store Code: {{ $store->code }}</span>
+                </div>
+            </div>
+            <div class="text-xs text-slate-600 space-y-1">
+                <p><span class="font-semibold text-slate-700">Address:</span> {{ $store->address }}, {{ $store->city }}, {{ $store->state }} - {{ $store->pincode ?? $store->postal_code }}</p>
+                <div class="grid grid-cols-2 gap-2 pt-1">
+                    @if($store->mobile || $store->phone)
+                    <p><span class="font-semibold text-slate-700">Phone:</span> {{ $store->mobile ?: $store->phone }}</p>
+                    @endif
+                    @if($store->email)
+                    <p><span class="font-semibold text-slate-700">Email:</span> {{ $store->email }}</p>
+                    @endif
+                    @if($store->tax_number)
+                    <p><span class="font-semibold text-slate-700">GSTIN:</span> <span class="font-mono font-bold text-[#4b55c8]">{{ $store->tax_number }}</span></p>
+                    @endif
+                    @if($store->dl_number ?? false)
+                    <p><span class="font-semibold text-slate-700">DL:</span> <span class="font-mono">{{ $store->dl_number }}</span></p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer & Billing Overview -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                <h3 class="font-extrabold text-sm text-slate-900 uppercase tracking-wider text-[11px]">Billed Customer Information</h3>
+                @if($sale->customer)
+                <a href="{{ route('store.customers.show', $sale->customer_id) }}" class="text-xs font-bold text-[#4b55c8] hover:underline">
+                    View Profile →
+                </a>
+                @endif
+            </div>
+            <div class="text-xs text-slate-600 space-y-1">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-sm text-slate-900">{{ $sale->customer_name ?: 'Walk-in Customer' }}</span>
+                    @if($sale->customer)
+                    <span class="font-mono text-xs text-slate-500 font-bold">{{ $sale->customer->customer_code }}</span>
+                    @endif
+                </div>
+                <p><span class="font-semibold text-slate-700">Phone:</span> {{ $sale->customer_phone ?: ($sale->customer?->phone ?: 'Not provided') }}</p>
+                @if($sale->customer?->email)
+                <p><span class="font-semibold text-slate-700">Email:</span> {{ $sale->customer->email }}</p>
+                @endif
+                @if($sale->customer?->address)
+                <p><span class="font-semibold text-slate-700">Address:</span> {{ $sale->customer->address }}, {{ $sale->customer->city }}</p>
+                @endif
+                @if($sale->customer?->doctor_name)
+                <p><span class="font-semibold text-slate-700">Consulting Doctor:</span> Dr. {{ $sale->customer->doctor_name }}</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
+    <!-- Overview Financial Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4">
         <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
             <p class="text-xs font-bold uppercase text-slate-400">Subtotal</p>
             <p class="text-xl font-black text-slate-900 mt-1">₹{{ number_format($sale->subtotal, 2) }}</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
+            <p class="text-xs font-bold uppercase text-slate-400">Discount</p>
+            <p class="text-xl font-black text-amber-600 mt-1">₹{{ number_format($sale->discount, 2) }}</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
+            <p class="text-xs font-bold uppercase text-slate-400">Tax / GST</p>
+            <p class="text-xl font-black text-slate-700 mt-1">₹{{ number_format($sale->tax, 2) }}</p>
         </div>
         <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
             <p class="text-xs font-bold uppercase text-slate-400">Grand Total</p>
             <p class="text-xl font-black text-[#4b55c8] mt-1">₹{{ number_format($sale->grand_total, 2) }}</p>
         </div>
         <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
-            <p class="text-xs font-bold uppercase text-slate-400">Paid Amount</p>
-            <p class="text-xl font-black text-emerald-600 mt-1">₹{{ number_format($sale->paid_amount, 2) }}</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-sm">
-            <p class="text-xs font-bold uppercase text-slate-400">Outstanding Balance</p>
-            <p class="text-xl font-black {{ $sale->outstandingAmount() > 0 ? 'text-rose-600' : 'text-slate-900' }} mt-1">
+            <p class="text-xs font-bold uppercase text-slate-400">Outstanding Due</p>
+            <p class="text-xl font-black {{ $sale->outstandingAmount() > 0 ? 'text-rose-600' : 'text-emerald-600' }} mt-1">
                 ₹{{ number_format($sale->outstandingAmount(), 2) }}
             </p>
         </div>
@@ -65,33 +132,42 @@
 
     <!-- Sale Items Table -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div class="p-4 border-b border-slate-100">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Dispensed Medicines & Items</h2>
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Dispensed Medicines & Items ({{ $sale->items->count() }})</h2>
+            <span class="text-xs text-slate-400 font-semibold">Tender Method: <b class="text-slate-800">{{ strtoupper($sale->payment_method instanceof \App\Enums\PaymentMethod ? $sale->payment_method->value : ($sale->payment_method ?: 'Cash')) }}</b></span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
                 <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100">
                     <tr>
+                        <th class="py-3 px-4">#</th>
                         <th class="py-3 px-4">Medicine</th>
                         <th class="py-3 px-4">Batch Number</th>
                         <th class="py-3 px-4">Expiry</th>
                         <th class="py-3 px-4">Unit Price</th>
                         <th class="py-3 px-4">Qty</th>
+                        <th class="py-3 px-4">Discount</th>
+                        <th class="py-3 px-4">GST Rate</th>
                         <th class="py-3 px-4">Tax Amount</th>
                         <th class="py-3 px-4 text-right">Line Total</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
-                    @foreach($sale->items as $item)
+                    @foreach($sale->items as $index => $item)
                     <tr>
+                        <td class="py-3 px-4 text-slate-400">{{ $index + 1 }}</td>
                         <td class="py-3 px-4">
                             <span class="font-bold text-slate-900">{{ $item->medicine?->displayName() }}</span>
-                            <span class="text-xs text-slate-400 block">{{ $item->medicine?->generic_name }}</span>
+                            @if($item->medicine?->generic_name)
+                            <span class="text-xs text-slate-400 block">{{ $item->medicine->generic_name }}</span>
+                            @endif
                         </td>
                         <td class="py-3 px-4 font-mono font-bold text-slate-800">{{ $item->batch?->batch_number }}</td>
                         <td class="py-3 px-4">{{ $item->batch?->expiry_date?->format('d M Y') }}</td>
                         <td class="py-3 px-4">₹{{ number_format($item->unit_price, 2) }}</td>
                         <td class="py-3 px-4 font-black text-slate-900">{{ $item->quantity }}</td>
+                        <td class="py-3 px-4 text-slate-500">₹{{ number_format($item->discount, 2) }}</td>
+                        <td class="py-3 px-4 text-slate-600">{{ $item->gst_rate > 0 ? $item->gst_rate.'%' : '0%' }}</td>
                         <td class="py-3 px-4">₹{{ number_format($item->tax_amount, 2) }}</td>
                         <td class="py-3 px-4 text-right font-black text-slate-900">₹{{ number_format($item->line_total, 2) }}</td>
                     </tr>
@@ -104,7 +180,10 @@
     <!-- If Outstanding > 0 and Completed: Record Payment Form -->
     @if($sale->isCompleted() && $sale->outstandingAmount() > 0)
     <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm space-y-3">
-        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Record Customer Payment</h2>
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Record Customer Payment</h2>
+            <span class="text-xs font-bold text-rose-600">Pending Amount: ₹{{ number_format($sale->outstandingAmount(), 2) }}</span>
+        </div>
         <form method="POST" action="{{ route('store.sales.record-payment', $sale->id) }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
             @csrf
             <div>
@@ -136,7 +215,7 @@
     @if($sale->payments->count() > 0)
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="p-4 border-b border-slate-100">
-            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Payment Transaction History</h2>
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Payment Transaction Receipts (Ledger)</h2>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs sm:text-sm">
@@ -154,7 +233,7 @@
                     <tr>
                         <td class="py-3 px-4 font-mono font-bold text-[#4b55c8]">{{ $p->payment_number }}</td>
                         <td class="py-3 px-4">{{ $p->payment_date->format('d M Y') }}</td>
-                        <td class="py-3 px-4 font-bold">{{ strtoupper($p->payment_method) }}</td>
+                        <td class="py-3 px-4 font-bold">{{ strtoupper($p->payment_method instanceof \App\Enums\PaymentMethod ? $p->payment_method->value : ($p->payment_method ?: 'Cash')) }}</td>
                         <td class="py-3 px-4">{{ $p->reference_number ?: '—' }}</td>
                         <td class="py-3 px-4 text-right font-black text-emerald-600">₹{{ number_format($p->amount, 2) }}</td>
                     </tr>
@@ -164,5 +243,23 @@
         </div>
     </div>
     @endif
+
+    <!-- System Audit Information Card -->
+    <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-3">
+        <div>
+            <span>Created by: <b class="text-slate-800">{{ $sale->creator?->name ?? 'System' }}</b></span>
+            @if($sale->created_at)
+            <span class="ml-3">Created at: <b class="text-slate-800">{{ $sale->created_at->format('d M Y, h:i A') }}</b></span>
+            @endif
+        </div>
+        <div>
+            @if($sale->completed_at)
+            <span>Completed at: <b class="text-slate-800">{{ $sale->completed_at->format('d M Y, h:i A') }}</b></span>
+            @endif
+            @if($sale->updated_by && $sale->updater)
+            <span class="ml-3">Last updated by: <b class="text-slate-800">{{ $sale->updater->name }}</b></span>
+            @endif
+        </div>
+    </div>
 </div>
 @endsection

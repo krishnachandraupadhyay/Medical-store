@@ -33,7 +33,9 @@ class Store extends Model
         'state',
         'pincode',
         'gstin',
+        'tax_number',
         'drug_license_no',
+        'dl_number',
         'license_expiry_date',
         'store_type',
         'status',
@@ -307,5 +309,37 @@ class Store extends Model
     public function dateFormat(): string
     {
         return (string) $this->getSetting('date_format', 'd-m-Y');
+    }
+
+    /**
+     * Accessor for tax_number mapping to gstin.
+     */
+    public function getTaxNumberAttribute(): ?string
+    {
+        return $this->attributes['gstin'] ?? null;
+    }
+
+    /**
+     * Mutator for tax_number mapping to gstin.
+     */
+    public function setTaxNumberAttribute(?string $value): void
+    {
+        $this->attributes['gstin'] = $value;
+    }
+
+    /**
+     * Accessor for dl_number mapping to drug_license_no.
+     */
+    public function getDlNumberAttribute(): ?string
+    {
+        return $this->attributes['drug_license_no'] ?? null;
+    }
+
+    /**
+     * Mutator for dl_number mapping to drug_license_no.
+     */
+    public function setDlNumberAttribute(?string $value): void
+    {
+        $this->attributes['drug_license_no'] = $value;
     }
 }

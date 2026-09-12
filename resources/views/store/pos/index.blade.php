@@ -136,12 +136,15 @@
 
                     <div class="grid grid-cols-2 gap-2">
                         <select name="customer_id" id="customerSelect" class="w-full text-xs font-semibold rounded-xl border border-slate-200 p-2 focus:border-[#4b55c8] outline-none">
-                            <option value="">Walk-in Customer</option>
+                            <option value="" data-code="" data-name="Walk-in Customer" data-phone="">Walk-in Customer</option>
                             @foreach($customers as $c)
-                            <option value="{{ $c->id }}" data-name="{{ $c->name }}" data-phone="{{ $c->phone }}">{{ $c->name }} ({{ $c->phone ?: 'No phone' }})</option>
+                            <option value="{{ $c->id }}" data-name="{{ $c->name }}" data-phone="{{ $c->phone }}" data-code="{{ $c->customer_code }}">{{ $c->name }} [{{ $c->customer_code }}] ({{ $c->phone ?: 'No phone' }})</option>
                             @endforeach
                         </select>
                         <input type="text" name="customer_phone" id="customerPhoneInput" placeholder="Customer Phone" class="w-full text-xs rounded-xl border border-slate-200 p-2 outline-none">
+                    </div>
+                    <div id="selectedCustomerBadge" class="hidden text-[10px] text-slate-500 font-medium flex items-center gap-2 pt-0.5">
+                        <span>Code: <b id="selectedCustCode" class="text-slate-800 font-mono"></b></span>
                     </div>
                     <input type="hidden" name="customer_name" id="customerNameInput" value="Walk-in Customer">
                 </div>
@@ -1134,6 +1137,15 @@
         const selected = e.target.options[e.target.selectedIndex];
         document.getElementById('customerNameInput').value = selected.dataset.name || 'Walk-in Customer';
         document.getElementById('customerPhoneInput').value = selected.dataset.phone || '';
+
+        const badge = document.getElementById('selectedCustomerBadge');
+        const codeSpan = document.getElementById('selectedCustCode');
+        if (selected.dataset.code) {
+            codeSpan.innerText = selected.dataset.code;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
     });
 
     function openQuickCustomerModal() {
@@ -1173,12 +1185,17 @@
                 opt.value = res.customer.id;
                 opt.dataset.name = res.customer.name;
                 opt.dataset.phone = res.customer.phone || '';
-                opt.innerText = `${res.customer.name} (${res.customer.phone || 'No phone'})`;
+                opt.dataset.code = res.customer.code || '';
+                opt.innerText = `${res.customer.name} [${res.customer.code}] (${res.customer.phone || 'No phone'})`;
                 opt.selected = true;
                 sel.appendChild(opt);
 
                 document.getElementById('customerNameInput').value = res.customer.name;
                 document.getElementById('customerPhoneInput').value = res.customer.phone || '';
+
+                const badge = document.getElementById('selectedCustomerBadge');
+                document.getElementById('selectedCustCode').innerText = res.customer.code || '';
+                badge.classList.remove('hidden');
 
                 closeQuickCustomerModal();
                 showScanAlert(`Customer [${res.customer.name}] added!`, 'success');

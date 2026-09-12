@@ -53,7 +53,17 @@ class PosController extends Controller
 
         $medicines = Medicine::forStore($store->id)
             ->active()
-            ->search($term)
+            ->where(function ($q) use ($term) {
+                $q->where('name', 'like', "%{$term}%")
+                    ->orWhere('generic_name', 'like', "%{$term}%")
+                    ->orWhere('brand_name', 'like', "%{$term}%")
+                    ->orWhere('hsn_code', 'like', "%{$term}%")
+                    ->orWhereHas('batches', function ($bq) use ($term) {
+                        $bq->where('batch_number', 'like', "%{$term}%")
+                            ->orWhere('barcode', 'like', "%{$term}%")
+                            ->orWhere('secondary_barcode', 'like', "%{$term}%");
+                    });
+            })
             ->with(['batches' => function ($bq) {
                 $bq->where('status', 'active')
                     ->where('quantity', '>', 0)
@@ -62,6 +72,8 @@ class PosController extends Controller
             }, 'unit', 'dosageForm'])
             ->limit(20)
             ->get()
+            ->filter(fn (Medicine $med) => $med->batches->count() > 0)
+            ->values()
             ->map(function (Medicine $med) {
                 $batches = $med->batches->map(function (Batch $b) {
                     return [
@@ -93,6 +105,35 @@ class PosController extends Controller
             });
 
         return response()->json($medicines);
+    }
+
+    /**
+     * Dynamic customer search for POS terminal.
+     */
+    public function searchCustomers(Request $request): JsonResponse
+    {
+        $store = current_store();
+        abort_unless($store, 403, 'No active store associated.');
+
+        $term = trim((string) $request->input('q', ''));
+        if (strlen($term) < 1) {
+            return response()->json([]);
+        }
+
+        $customers = Customer::forStore($store->id)
+            ->active()
+            ->search($term)
+            ->limit(20)
+            ->get()
+            ->map(fn (Customer $c) => [
+                'id' => $c->id,
+                'name' => $c->name,
+                'phone' => $c->phone,
+                'code' => $c->customer_code,
+                'outstanding' => (float) $c->outstandingAmount(),
+            ]);
+
+        return response()->json($customers);
     }
 
     /**

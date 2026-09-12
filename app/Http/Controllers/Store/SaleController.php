@@ -29,7 +29,7 @@ class SaleController extends Controller
         $store = current_store();
         abort_unless($store, 403, 'No active store associated.');
 
-        $query = Sale::forStore($store->id)->with(['customer', 'items']);
+        $query = Sale::forStore($store->id)->with(['customer', 'items', 'creator']);
 
         if ($search = trim((string) $request->input('search'))) {
             $query->search($search);

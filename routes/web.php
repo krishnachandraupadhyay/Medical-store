@@ -261,6 +261,7 @@ Route::prefix('store')->name('store.')->group(function () {
         Route::middleware(['feature:pos', 'permission:sales.create'])->prefix('pos')->name('pos.')->group(function () {
             Route::get('/', [PosController::class, 'index'])->name('index');
             Route::get('/search-medicines', [PosController::class, 'searchMedicines'])->name('search-medicines');
+            Route::get('/search-customers', [PosController::class, 'searchCustomers'])->name('search-customers');
             Route::get('/barcode', [PosController::class, 'barcodeSearch'])->name('barcode');
             Route::post('/quick-customer', [PosController::class, 'quickCustomer'])->name('quick-customer');
             Route::post('/checkout', [PosController::class, 'checkout'])->name('checkout');

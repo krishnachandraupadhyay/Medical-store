@@ -112,11 +112,17 @@
             <div>
                 <span class="font-bold text-slate-400 uppercase tracking-wider block text-[10px]">Patient / Billed To:</span>
                 <span class="font-bold text-slate-900 text-sm block mt-0.5">{{ $sale->customer_name ?: 'Walk-in Customer' }}</span>
+                @if($sale->customer && $sale->customer->customer_code)
+                    <span class="text-slate-500 font-mono text-[10px] block">Customer Code: {{ $sale->customer->customer_code }}</span>
+                @endif
                 @if($sale->customer_phone) 
                     <span class="text-slate-600 block mt-0.5 font-medium">Contact: {{ $sale->customer_phone }}</span> 
                 @endif
                 @if($sale->customer && $sale->customer->address) 
                     <span class="text-slate-500 block mt-0.5">{{ $sale->customer->address }}</span> 
+                @endif
+                @if($sale->customer && $sale->customer->doctor_name)
+                    <span class="text-slate-700 block mt-0.5 font-semibold">Doctor: Dr. {{ $sale->customer->doctor_name }}</span>
                 @endif
             </div>
             <div class="sm:text-right">
@@ -134,7 +140,7 @@
                     </span>
                 </div>
                 <span class="text-xs text-slate-600 block mt-1">
-                    Primary Tender: <b>{{ strtoupper($sale->payment_method ?: 'Cash') }}</b>
+                    Primary Tender: <b>{{ strtoupper($sale->payment_method instanceof \App\Enums\PaymentMethod ? $sale->payment_method->value : ($sale->payment_method ?: 'Cash')) }}</b>
                 </span>
             </div>
         </div>
@@ -328,6 +334,12 @@
             @if($sale->customer_phone)
                 <div>Phone: {{ $sale->customer_phone }}</div>
             @endif
+            @if($sale->customer && $sale->customer->customer_code)
+                <div>Code: {{ $sale->customer->customer_code }}</div>
+            @endif
+            @if($sale->customer && $sale->customer->doctor_name)
+                <div>Dr: {{ $sale->customer->doctor_name }}</div>
+            @endif
         </div>
 
         <!-- Items Table -->
@@ -376,7 +388,7 @@
                 <span>₹{{ number_format($sale->grand_total, 2) }}</span>
             </div>
             <div class="flex justify-between font-bold pt-0.5">
-                <span>Paid ({{ strtoupper($sale->payment_method ?: 'Cash') }}):</span>
+                <span>Paid ({{ strtoupper($sale->payment_method instanceof \App\Enums\PaymentMethod ? $sale->payment_method->value : ($sale->payment_method ?: 'Cash')) }}):</span>
                 <span>₹{{ number_format($sale->paid_amount, 2) }}</span>
             </div>
             @if($sale->outstandingAmount() > 0)

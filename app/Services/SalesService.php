@@ -10,6 +10,7 @@ use App\Enums\SaleStatus;
 use App\Enums\StorePaymentType;
 use App\Events\SaleCompleted;
 use App\Models\Batch;
+use App\Models\Customer;
 use App\Models\Medicine;
 use App\Models\Sale;
 use App\Models\SaleItem;
@@ -44,8 +45,20 @@ class SalesService
             $invoiceNumber = Sale::generateInvoiceNumber($store->id);
             $saleDate = $data['sale_date'] ?? now()->toDateString();
             $customerId = ! empty($data['customer_id']) ? (int) $data['customer_id'] : null;
-            $customerName = trim($data['customer_name'] ?? 'Walk-in Customer');
-            $customerPhone = trim($data['customer_phone'] ?? '');
+            $customer = null;
+            if ($customerId) {
+                $customer = Customer::forStore($store->id)->find($customerId);
+                if (! $customer) {
+                    throw ValidationException::withMessages([
+                        'customer_id' => 'The selected customer is invalid for this store.',
+                    ]);
+                }
+                $customerName = $customer->name;
+                $customerPhone = $customer->phone ?: trim($data['customer_phone'] ?? '');
+            } else {
+                $customerName = trim($data['customer_name'] ?? 'Walk-in Customer');
+                $customerPhone = trim($data['customer_phone'] ?? '');
+            }
 
             // Calculate totals
             $subtotal = 0.00;
@@ -200,6 +213,11 @@ class SalesService
                     ]);
                 }
 
+                if ($customer) {
+                    $customer->increment('visit_count');
+                    $customer->recalculateLoyaltyTier();
+                }
+
                 AuditLogger::log(
                     AuditAction::CREATED,
                     AuditModule::SALES,
@@ -285,6 +303,14 @@ class SalesService
                     'notes' => "Payment recorded on completing draft sale Invoice #{$lockedSale->invoice_number}",
                     'created_by' => $userId,
                 ]);
+            }
+
+            if ($lockedSale->customer_id) {
+                $customer = Customer::forStore($store->id)->find($lockedSale->customer_id);
+                if ($customer) {
+                    $customer->increment('visit_count');
+                    $customer->recalculateLoyaltyTier();
+                }
             }
 
             AuditLogger::log(
