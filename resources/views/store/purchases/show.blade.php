@@ -51,6 +51,13 @@
                         Cancel Invoice
                     </button>
                 </form>
+            @elseif ($purchase->status === \App\Enums\PurchaseStatus::COMPLETED && $purchase->isReturnable())
+                <a href="{{ route('store.purchase-returns.create', ['purchase_id' => $purchase->id]) }}" class="px-4 py-2 rounded-2xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-amber-600/25 transition flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 15v-1a4 4 0 00-4-4H4m0 0l3-3m-3 3l3 3m5 4h5a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v2"/>
+                    </svg>
+                    <span>Return Items</span>
+                </a>
             @endif
         </div>
     </div>
@@ -135,6 +142,20 @@
                     <span class="text-[#1e2746]">Grand Total:</span>
                     <span class="font-mono text-base text-[#4b55c8]">₹{{ number_format($purchase->grand_total, 2) }}</span>
                 </div>
+                @if ($purchase->totalReturned() > 0)
+                <div class="flex items-center justify-between text-xs text-rose-600 pt-1">
+                    <span>Total Returned:</span>
+                    <span class="font-mono font-bold">-₹{{ number_format($purchase->totalReturned(), 2) }}</span>
+                </div>
+                @endif
+                <div class="flex items-center justify-between text-xs text-emerald-600 pt-1">
+                    <span>Paid Amount:</span>
+                    <span class="font-mono font-bold">₹{{ number_format($purchase->paid_amount, 2) }}</span>
+                </div>
+                <div class="flex items-center justify-between text-xs font-bold {{ $purchase->outstandingAmount() > 0 ? 'text-amber-600' : 'text-slate-600' }} pt-1 border-t border-dashed border-slate-200">
+                    <span>Outstanding Due:</span>
+                    <span class="font-mono font-black">₹{{ number_format($purchase->outstandingAmount(), 2) }}</span>
+                </div>
             </div>
         </div>
 
@@ -217,6 +238,62 @@
             </div>
         @endif
     </div>
+
+    @if ($purchase->returns->isNotEmpty())
+        <div class="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-base font-bold text-[#1e2746]">Linked Purchase Returns (Debit Notes)</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Stock returns and debit note adjustments linked to this purchase invoice.</p>
+                </div>
+                <span class="text-xs font-bold text-[#4b55c8] bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                    {{ $purchase->returns->count() }} {{ Str::plural('Return', $purchase->returns->count()) }}
+                </span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-slate-100 text-[11px] font-extrabold text-[#64748b] uppercase tracking-wider bg-slate-50/50">
+                            <th class="py-3 px-6">Return #</th>
+                            <th class="py-3 px-6">Date</th>
+                            <th class="py-3 px-6 text-center">Items</th>
+                            <th class="py-3 px-6 text-right">Debit Note Total</th>
+                            <th class="py-3 px-6 text-right">Adjustment</th>
+                            <th class="py-3 px-6 text-right">Refund</th>
+                            <th class="py-3 px-6 text-center">Status</th>
+                            <th class="py-3 px-6 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 font-medium text-[#1e2746]">
+                        @foreach ($purchase->returns as $ret)
+                            <tr class="hover:bg-slate-50/70 transition">
+                                <td class="py-3 px-6 font-mono font-bold text-[#4b55c8]">
+                                    <a href="{{ route('store.purchase-returns.show', $ret) }}" class="hover:underline">
+                                        {{ $ret->return_number }}
+                                    </a>
+                                </td>
+                                <td class="py-3 px-6">{{ $ret->return_date->format('d M, Y') }}</td>
+                                <td class="py-3 px-6 text-center">{{ $ret->items->sum('quantity') }} units</td>
+                                <td class="py-3 px-6 text-right font-mono font-bold text-rose-600">₹{{ number_format($ret->grand_total, 2) }}</td>
+                                <td class="py-3 px-6 text-right font-mono text-slate-700">₹{{ number_format($ret->adjustment_amount, 2) }}</td>
+                                <td class="py-3 px-6 text-right font-mono text-emerald-600">₹{{ number_format($ret->refund_amount, 2) }}</td>
+                                <td class="py-3 px-6 text-center">
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        {{ ucfirst($ret->status->value) }}
+                                    </span>
+                                </td>
+                                <td class="py-3 px-6 text-right">
+                                    <a href="{{ route('store.purchase-returns.show', $ret) }}" class="px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                        View
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    @endif
 
 </div>
 @endsection

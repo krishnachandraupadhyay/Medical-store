@@ -452,6 +452,7 @@ class SupplierController extends Controller
 
         $priorPurchases = 0.00;
         $priorPayments = 0.00;
+        $priorReturns = 0.00;
 
         if ($startDate) {
             $priorPurchases = (float) $supplier->purchases()
@@ -466,9 +467,14 @@ class SupplierController extends Controller
                 })
                 ->whereDate('payment_date', '<', $startDate)
                 ->sum('amount');
+
+            $priorReturns = (float) $supplier->purchaseReturns()
+                ->where('status', 'completed')
+                ->whereDate('return_date', '<', $startDate)
+                ->sum('grand_total');
         }
 
-        $periodOpeningBalance = round($baseOpening + $priorPurchases - $priorPayments, 2);
+        $periodOpeningBalance = round($baseOpening + $priorPurchases - $priorPayments - $priorReturns, 2);
 
         // 2. Fetch purchases in range
         $purchasesQuery = $supplier->purchases()->where('status', 'completed');
@@ -480,7 +486,17 @@ class SupplierController extends Controller
         }
         $purchases = $purchasesQuery->get();
 
-        // 3. Fetch payments in range
+        // 3. Fetch purchase returns in range
+        $returnsQuery = $supplier->purchaseReturns()->where('status', 'completed');
+        if ($startDate) {
+            $returnsQuery->whereDate('return_date', '>=', $startDate);
+        }
+        if ($endDate) {
+            $returnsQuery->whereDate('return_date', '<=', $endDate);
+        }
+        $returns = $returnsQuery->get();
+
+        // 4. Fetch payments in range
         $paymentsQuery = StorePayment::where('store_id', $store->id)
             ->where('supplier_id', $supplier->id)
             ->where(function ($q) {
@@ -494,7 +510,7 @@ class SupplierController extends Controller
         }
         $payments = $paymentsQuery->get();
 
-        // 4. Merge into unified chronological stream
+        // 5. Merge into unified chronological stream
         $rawEntries = [];
 
         foreach ($purchases as $p) {
@@ -509,6 +525,21 @@ class SupplierController extends Controller
                 'debit' => round((float) $p->grand_total, 2),
                 'credit' => 0.00,
                 'model' => $p,
+            ];
+        }
+
+        foreach ($returns as $ret) {
+            $dateStr = Carbon::parse($ret->return_date)->toDateString();
+            $purchaseRef = $ret->purchase ? " (Invoice #{$ret->purchase->invoice_number})" : '';
+            $rawEntries[] = [
+                'date' => $dateStr,
+                'sort_key' => $dateStr.'_1_5_'.str_pad((string) $ret->id, 8, '0', STR_PAD_LEFT),
+                'type' => 'PURCHASE_RETURN',
+                'reference' => $ret->return_number,
+                'description' => "Purchase Return #{$ret->return_number}{$purchaseRef} - Debit Note",
+                'debit' => 0.00,
+                'credit' => round((float) $ret->grand_total, 2),
+                'model' => $ret,
             ];
         }
 

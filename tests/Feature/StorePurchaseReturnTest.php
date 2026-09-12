@@ -4,9 +4,11 @@ namespace Tests\Feature;
 
 use App\Enums\BillingCycle;
 use App\Enums\MovementType;
+use App\Enums\PaymentStatus;
 use App\Enums\PlanStatus;
 use App\Enums\PurchaseStatus;
 use App\Enums\ReturnStatus;
+use App\Enums\StorePaymentType;
 use App\Enums\StoreStatus;
 use App\Enums\SubscriptionStatus;
 use App\Enums\UserRole;
@@ -17,6 +19,7 @@ use App\Models\PurchaseItem;
 use App\Models\PurchaseReturn;
 use App\Models\StockMovement;
 use App\Models\Store;
+use App\Models\StorePayment;
 use App\Models\Subscription;
 use App\Models\SubscriptionPlan;
 use App\Models\Supplier;
@@ -132,6 +135,7 @@ class StorePurchaseReturnTest extends TestCase
             'name' => 'Apex Pharma Distributors',
             'phone' => '9876543210',
             'status' => 'active',
+            'opening_balance' => 0.00,
         ]);
 
         $this->medicineA = Medicine::create([
@@ -158,9 +162,10 @@ class StorePurchaseReturnTest extends TestCase
             'invoice_number' => 'PUR-2026-000005',
             'purchase_date' => now()->toDateString(),
             'status' => PurchaseStatus::COMPLETED,
+            'payment_status' => PaymentStatus::PARTIAL,
             'subtotal' => 5000.00,
             'grand_total' => 5000.00,
-            'paid_amount' => 5000.00,
+            'paid_amount' => 3000.00,
             'completed_at' => now(),
         ]);
 
@@ -178,16 +183,21 @@ class StorePurchaseReturnTest extends TestCase
         ]);
     }
 
-    public function test_purchase_return_deducts_stock_and_creates_ledger_entry(): void
+    public function test_purchase_return_deducts_stock_and_creates_on_account_adjustment(): void
     {
+        // Outstanding due on invoice is 5000 - 3000 = 2000
+        $this->assertEquals(2000.00, $this->purchaseA->outstandingAmount());
+
         $response = $this->actingAs($this->ownerA)->post(route('store.purchase-returns.store'), [
             'purchase_id' => $this->purchaseA->id,
             'return_date' => now()->toDateString(),
             'reason' => 'Damaged packaging from distributor',
+            'settlement_mode' => 'credit',
             'items' => [
                 [
                     'purchase_item_id' => $this->purchaseItemA->id,
                     'quantity' => 10,
+                    'reason' => 'Damaged pack',
                 ],
             ],
         ]);
@@ -198,6 +208,8 @@ class StorePurchaseReturnTest extends TestCase
 
         $this->assertEquals(ReturnStatus::COMPLETED, $purchaseReturn->status);
         $this->assertEquals(1000.00, $purchaseReturn->grand_total);
+        $this->assertEquals(1000.00, $purchaseReturn->adjustment_amount);
+        $this->assertEquals(0.00, $purchaseReturn->refund_amount);
 
         // Stock deducted from 50 to 40
         $this->batchA->refresh();
@@ -211,6 +223,48 @@ class StorePurchaseReturnTest extends TestCase
         $this->assertEquals(10, $movement->quantity);
         $this->assertEquals(50, $movement->before_quantity);
         $this->assertEquals(40, $movement->after_quantity);
+
+        // Invoice outstanding now reduced to 1000 (5000 - 3000 paid - 1000 returned)
+        $this->purchaseA->refresh();
+        $this->assertEquals(1000.00, $this->purchaseA->outstandingAmount());
+
+        // Supplier outstanding: 5000 purchase - 3000 paid - 1000 returned = 1000
+        $this->assertEquals(1000.00, $this->supplierA->outstandingAmount());
+    }
+
+    public function test_purchase_return_with_cash_refund_creates_store_payment(): void
+    {
+        $response = $this->actingAs($this->ownerA)->post(route('store.purchase-returns.store'), [
+            'purchase_id' => $this->purchaseA->id,
+            'return_date' => now()->toDateString(),
+            'reason' => 'Direct cash refund from supplier',
+            'settlement_mode' => 'refund',
+            'refund_method' => 'cash',
+            'refund_reference' => 'CASH-REC-01',
+            'items' => [
+                [
+                    'purchase_item_id' => $this->purchaseItemA->id,
+                    'quantity' => 5,
+                ],
+            ],
+        ]);
+
+        $purchaseReturn = PurchaseReturn::where('store_id', $this->storeA->id)->first();
+        $this->assertNotNull($purchaseReturn);
+        $response->assertRedirect(route('store.purchase-returns.show', $purchaseReturn->id));
+
+        $this->assertEquals(500.00, $purchaseReturn->grand_total);
+        $this->assertEquals(500.00, $purchaseReturn->refund_amount);
+        $this->assertEquals('cash', $purchaseReturn->refund_method);
+
+        // Verify StorePayment created for refund
+        $payment = StorePayment::where('store_id', $this->storeA->id)
+            ->where('type', StorePaymentType::PURCHASE_REFUND)
+            ->first();
+        $this->assertNotNull($payment);
+        $this->assertEquals(500.00, $payment->amount);
+        $this->assertEquals('cash', $payment->payment_method->value);
+        $this->assertEquals($this->supplierA->id, $payment->supplier_id);
     }
 
     public function test_cannot_return_more_than_available_batch_stock(): void
@@ -233,6 +287,91 @@ class StorePurchaseReturnTest extends TestCase
         $response->assertSessionHasErrors(['items']);
         $this->batchA->refresh();
         $this->assertEquals(5, $this->batchA->quantity); // Stock untouched
+    }
+
+    public function test_cannot_return_more_than_purchased_quantity(): void
+    {
+        $response = $this->actingAs($this->ownerA)->post(route('store.purchase-returns.store'), [
+            'purchase_id' => $this->purchaseA->id,
+            'return_date' => now()->toDateString(),
+            'reason' => 'Excess return attempt',
+            'items' => [
+                [
+                    'purchase_item_id' => $this->purchaseItemA->id,
+                    'quantity' => 100, // Only 50 purchased!
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors(['items']);
+    }
+
+    public function test_cannot_return_from_draft_purchase(): void
+    {
+        $this->purchaseA->update(['status' => PurchaseStatus::DRAFT]);
+
+        $response = $this->actingAs($this->ownerA)->post(route('store.purchase-returns.store'), [
+            'purchase_id' => $this->purchaseA->id,
+            'return_date' => now()->toDateString(),
+            'reason' => 'Draft return attempt',
+            'items' => [
+                [
+                    'purchase_item_id' => $this->purchaseItemA->id,
+                    'quantity' => 5,
+                ],
+            ],
+        ]);
+
+        $response->assertSessionHasErrors(['purchase_id']);
+    }
+
+    public function test_supplier_ledger_includes_purchase_return_credit(): void
+    {
+        // Execute return
+        $this->actingAs($this->ownerA)->post(route('store.purchase-returns.store'), [
+            'purchase_id' => $this->purchaseA->id,
+            'return_date' => now()->toDateString(),
+            'reason' => 'Damaged return',
+            'settlement_mode' => 'credit',
+            'items' => [
+                [
+                    'purchase_item_id' => $this->purchaseItemA->id,
+                    'quantity' => 10,
+                ],
+            ],
+        ]);
+
+        $purchaseReturn = PurchaseReturn::where('store_id', $this->storeA->id)->first();
+
+        $response = $this->actingAs($this->ownerA)->get(route('store.suppliers.ledger', $this->supplierA->id));
+        $response->assertStatus(200);
+        $response->assertSee($purchaseReturn->return_number);
+        $response->assertSee('PURCHASE RETURN');
+        $response->assertSee('1,000.00');
+    }
+
+    public function test_print_debit_note_view(): void
+    {
+        $this->actingAs($this->ownerA)->post(route('store.purchase-returns.store'), [
+            'purchase_id' => $this->purchaseA->id,
+            'return_date' => now()->toDateString(),
+            'reason' => 'Defective batch',
+            'settlement_mode' => 'credit',
+            'items' => [
+                [
+                    'purchase_item_id' => $this->purchaseItemA->id,
+                    'quantity' => 5,
+                ],
+            ],
+        ]);
+
+        $purchaseReturn = PurchaseReturn::where('store_id', $this->storeA->id)->first();
+
+        $response = $this->actingAs($this->ownerA)->get(route('store.purchase-returns.print', $purchaseReturn->id));
+        $response->assertStatus(200);
+        $response->assertSee('DEBIT NOTE');
+        $response->assertSee($purchaseReturn->return_number);
+        $response->assertSee('Apex Pharma Distributors');
     }
 
     public function test_cross_store_purchase_return_is_prevented(): void

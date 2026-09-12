@@ -83,6 +83,11 @@ class Supplier extends Model
         return $this->hasMany(Purchase::class, 'supplier_id');
     }
 
+    public function purchaseReturns(): HasMany
+    {
+        return $this->hasMany(PurchaseReturn::class, 'supplier_id');
+    }
+
     public function payments(): HasMany
     {
         return $this->hasMany(StorePayment::class, 'supplier_id');
@@ -163,13 +168,19 @@ class Supplier extends Model
         return round($purchasePaid + $directPaid, 2);
     }
 
+    public function totalReturned(): float
+    {
+        return (float) $this->purchaseReturns()->where('status', 'completed')->sum('grand_total');
+    }
+
     public function outstandingAmount(): float
     {
         $opening = $this->openingBalancePayable();
         $purchased = $this->totalPurchased();
+        $returned = $this->totalReturned();
         $paid = $this->totalPaid();
 
-        return round($opening + $purchased - $paid, 2);
+        return round($opening + $purchased - $returned - $paid, 2);
     }
 
     public function availableCredit(): ?float

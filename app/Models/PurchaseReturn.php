@@ -25,6 +25,10 @@ class PurchaseReturn extends Model
         'discount',
         'tax',
         'grand_total',
+        'refund_amount',
+        'adjustment_amount',
+        'refund_method',
+        'refund_status',
         'reason',
         'notes',
         'created_by',
@@ -41,8 +45,20 @@ class PurchaseReturn extends Model
             'discount' => 'decimal:2',
             'tax' => 'decimal:2',
             'grand_total' => 'decimal:2',
+            'refund_amount' => 'decimal:2',
+            'adjustment_amount' => 'decimal:2',
             'completed_at' => 'datetime',
         ];
+    }
+
+    public function isRefunded(): bool
+    {
+        return (float) $this->refund_amount > 0 && $this->refund_status === 'refunded';
+    }
+
+    public function isAdjusted(): bool
+    {
+        return (float) $this->adjustment_amount > 0 || $this->refund_status === 'adjusted';
     }
 
     public static function generateReturnNumber(int $storeId): string

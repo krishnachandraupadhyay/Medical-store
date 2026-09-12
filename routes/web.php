@@ -295,12 +295,14 @@ Route::prefix('store')->name('store.')->group(function () {
             Route::get('/{salesReturn}/receipt', [SalesReturnController::class, 'receipt'])->name('receipt');
         });
 
-        // Purchase Return Routes (Phase 20)
+        // Purchase Return Routes (Phase 20 & Phase 34)
         Route::middleware(['feature:purchase_return', 'permission:purchases.return'])->prefix('purchase-returns')->name('purchase-returns.')->group(function () {
             Route::get('/', [PurchaseReturnController::class, 'index'])->name('index');
             Route::get('/create', [PurchaseReturnController::class, 'create'])->name('create');
             Route::post('/', [PurchaseReturnController::class, 'store'])->name('store');
             Route::get('/{purchaseReturn}', [PurchaseReturnController::class, 'show'])->name('show');
+            Route::get('/{purchaseReturn}/print', [PurchaseReturnController::class, 'printReturn'])->name('print');
+            Route::get('/{purchaseReturn}/receipt', [PurchaseReturnController::class, 'printReturn'])->name('receipt');
         });
 
         // Expense Management Routes (Phase 21)

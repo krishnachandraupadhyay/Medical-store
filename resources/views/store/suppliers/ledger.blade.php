@@ -162,6 +162,10 @@
                                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
                                         PURCHASE
                                     </span>
+                                @elseif($entry['type'] === 'PURCHASE_RETURN')
+                                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                                        PURCHASE RETURN
+                                    </span>
                                 @else
                                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                         PAYMENT
@@ -171,6 +175,10 @@
                             <td class="py-3.5 px-5 font-mono font-bold text-slate-900">
                                 @if($entry['type'] === 'PURCHASE')
                                     <a href="{{ route('store.purchases.show', $entry['model']) }}" class="text-[#4b55c8] hover:underline">
+                                        {{ $entry['reference'] }}
+                                    </a>
+                                @elseif($entry['type'] === 'PURCHASE_RETURN')
+                                    <a href="{{ route('store.purchase-returns.show', $entry['model']) }}" class="text-amber-700 hover:underline">
                                         {{ $entry['reference'] }}
                                     </a>
                                 @else

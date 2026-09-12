@@ -122,17 +122,36 @@ class Purchase extends Model
 
     public function outstandingAmount(): float
     {
-        return max(0.00, round((float) $this->grand_total - (float) $this->paid_amount, 2));
+        $returned = $this->totalReturned();
+
+        return max(0.00, round((float) $this->grand_total - (float) $this->paid_amount - $returned, 2));
+    }
+
+    public function totalReturned(): float
+    {
+        return (float) $this->returns()
+            ->where('status', 'completed')
+            ->sum('grand_total');
+    }
+
+    public function isReturnable(): bool
+    {
+        if (! $this->isCompleted()) {
+            return false;
+        }
+
+        return $this->items->some(fn ($item) => $item->returnableQuantity() > 0);
     }
 
     public function updatePaymentStatus(): void
     {
         $paid = (float) $this->paid_amount;
+        $returned = $this->totalReturned();
         $total = (float) $this->grand_total;
 
-        if ($paid <= 0) {
+        if (($paid + $returned) <= 0) {
             $this->payment_status = PaymentStatus::UNPAID;
-        } elseif ($paid >= $total) {
+        } elseif (($paid + $returned) >= $total) {
             $this->payment_status = PaymentStatus::PAID;
         } else {
             $this->payment_status = PaymentStatus::PARTIAL;
