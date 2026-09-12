@@ -16,6 +16,8 @@ class StoreSalesReturnRequest extends FormRequest
         return [
             'return_date' => ['required', 'date'],
             'refund_amount' => ['nullable', 'numeric', 'min:0'],
+            'adjustment_amount' => ['nullable', 'numeric', 'min:0'],
+            'refund_method' => ['nullable', 'string', 'in:cash,upi,card,bank_transfer,credit_note'],
             'reason' => ['required', 'string', 'max:500'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'items' => ['required', 'array', 'min:1'],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Store\Return\StoreSalesReturnRequest;
+use App\Models\Customer;
 use App\Models\Sale;
 use App\Models\SalesReturn;
 use App\Services\SalesReturnService;
@@ -23,10 +24,14 @@ class SalesReturnController extends Controller
         $store = current_store();
         abort_unless($store, 403, 'No active store associated.');
 
-        $query = SalesReturn::forStore($store->id)->with(['sale', 'customer', 'items']);
+        $query = SalesReturn::forStore($store->id)->with(['sale', 'customer', 'items.medicine']);
 
         if ($search = trim((string) $request->input('search'))) {
             $query->search($search);
+        }
+
+        if ($customerId = $request->input('customer_id')) {
+            $query->where('customer_id', $customerId);
         }
 
         if ($fromDate = $request->input('from_date')) {
@@ -37,9 +42,24 @@ class SalesReturnController extends Controller
             $query->whereDate('return_date', '<=', $toDate);
         }
 
-        $returns = $query->latest('return_date')->latest('id')->paginate(15)->withQueryString();
+        // Compute KPIs for the store
+        $totalReturnsCount = SalesReturn::forStore($store->id)->count();
+        $totalReturnValue = (float) SalesReturn::forStore($store->id)->sum('grand_total');
+        $totalRefundedValue = (float) SalesReturn::forStore($store->id)->sum('refund_amount');
+        $totalAdjustedValue = (float) SalesReturn::forStore($store->id)->sum('adjustment_amount');
 
-        return view('store.sales-returns.index', compact('store', 'returns'));
+        $returns = $query->latest('return_date')->latest('id')->paginate(15)->withQueryString();
+        $customers = Customer::forStore($store->id)->orderBy('name')->get();
+
+        return view('store.sales-returns.index', compact(
+            'store',
+            'returns',
+            'customers',
+            'totalReturnsCount',
+            'totalReturnValue',
+            'totalRefundedValue',
+            'totalAdjustedValue'
+        ));
     }
 
     public function create(Request $request): View|RedirectResponse
@@ -53,7 +73,7 @@ class SalesReturnController extends Controller
         }
 
         $sale = Sale::forStore($store->id)
-            ->with(['customer', 'items.medicine', 'items.batch'])
+            ->with(['customer', 'items.medicine', 'items.batch', 'returns.items'])
             ->findOrFail($saleId);
 
         if (! $sale->isCompleted()) {
@@ -90,9 +110,21 @@ class SalesReturnController extends Controller
         abort_unless($store, 403, 'No active store associated.');
 
         $salesReturn = SalesReturn::forStore($store->id)
-            ->with(['sale', 'customer', 'items.medicine', 'items.batch'])
+            ->with(['sale', 'customer', 'items.medicine', 'items.batch', 'creator'])
             ->findOrFail($id);
 
         return view('store.sales-returns.show', compact('store', 'salesReturn'));
+    }
+
+    public function receipt(int $id): View
+    {
+        $store = current_store();
+        abort_unless($store, 403, 'No active store associated.');
+
+        $salesReturn = SalesReturn::forStore($store->id)
+            ->with(['sale.customer', 'customer', 'items.medicine', 'items.batch', 'creator'])
+            ->findOrFail($id);
+
+        return view('store.sales-returns.receipt', compact('store', 'salesReturn'));
     }
 }

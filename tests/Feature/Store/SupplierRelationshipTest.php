@@ -23,10 +23,14 @@ class SupplierRelationshipTest extends TestCase
 {
     use RefreshDatabase;
 
-    private Store            $store;
-    private Store            $otherStore;
-    private User             $owner;
-    private User             $otherOwner;
+    private Store $store;
+
+    private Store $otherStore;
+
+    private User $owner;
+
+    private User $otherOwner;
+
     private SubscriptionPlan $plan;
 
     protected function setUp(): void
@@ -36,71 +40,71 @@ class SupplierRelationshipTest extends TestCase
         app(RbacService::class)->seedDefaultSystemRoles();
 
         $this->plan = SubscriptionPlan::create([
-            'name'          => 'Supplier CRM Plan',
-            'slug'          => 'supplier-crm-plan',
-            'price'         => 999.00,
+            'name' => 'Supplier CRM Plan',
+            'slug' => 'supplier-crm-plan',
+            'price' => 999.00,
             'billing_cycle' => BillingCycle::MONTHLY,
-            'trial_days'    => 0,
-            'status'        => PlanStatus::ACTIVE,
-            'limits'        => ['max_suppliers' => 999],
-            'features'      => [
+            'trial_days' => 0,
+            'status' => PlanStatus::ACTIVE,
+            'limits' => ['max_suppliers' => 999],
+            'features' => [
                 'supplier_management',
                 'purchase_management',
             ],
         ]);
 
         $this->store = Store::create([
-            'code'       => 'MED-SUP01',
-            'name'       => 'Supplier Test Store A',
-            'email'      => 'sup-a@medstore.test',
-            'mobile'     => '9876540001',
-            'city'       => 'Mumbai',
-            'state'      => 'Maharashtra',
-            'pincode'    => '400001',
+            'code' => 'MED-SUP01',
+            'name' => 'Supplier Test Store A',
+            'email' => 'sup-a@medstore.test',
+            'mobile' => '9876540001',
+            'city' => 'Mumbai',
+            'state' => 'Maharashtra',
+            'pincode' => '400001',
             'store_type' => 'Retail',
-            'status'     => StoreStatus::ACTIVE,
+            'status' => StoreStatus::ACTIVE,
         ]);
 
         $this->owner = User::factory()->create([
-            'store_id'  => $this->store->id,
-            'role'      => UserRole::STORE_OWNER,
+            'store_id' => $this->store->id,
+            'role' => UserRole::STORE_OWNER,
             'is_active' => true,
-            'password'  => Hash::make('Password123!'),
+            'password' => Hash::make('Password123!'),
         ]);
 
         Subscription::create([
-            'store_id'             => $this->store->id,
+            'store_id' => $this->store->id,
             'subscription_plan_id' => $this->plan->id,
-            'start_date'           => Carbon::today()->subDays(5),
-            'end_date'             => Carbon::today()->addDays(25),
-            'status'               => SubscriptionStatus::ACTIVE,
+            'start_date' => Carbon::today()->subDays(5),
+            'end_date' => Carbon::today()->addDays(25),
+            'status' => SubscriptionStatus::ACTIVE,
         ]);
 
         $this->otherStore = Store::create([
-            'code'       => 'MED-SUP02',
-            'name'       => 'Supplier Test Store B',
-            'email'      => 'sup-b@medstore.test',
-            'mobile'     => '9876540002',
-            'city'       => 'Pune',
-            'state'      => 'Maharashtra',
-            'pincode'    => '411001',
+            'code' => 'MED-SUP02',
+            'name' => 'Supplier Test Store B',
+            'email' => 'sup-b@medstore.test',
+            'mobile' => '9876540002',
+            'city' => 'Pune',
+            'state' => 'Maharashtra',
+            'pincode' => '411001',
             'store_type' => 'Retail',
-            'status'     => StoreStatus::ACTIVE,
+            'status' => StoreStatus::ACTIVE,
         ]);
 
         $this->otherOwner = User::factory()->create([
-            'store_id'  => $this->otherStore->id,
-            'role'      => UserRole::STORE_OWNER,
+            'store_id' => $this->otherStore->id,
+            'role' => UserRole::STORE_OWNER,
             'is_active' => true,
-            'password'  => Hash::make('Password123!'),
+            'password' => Hash::make('Password123!'),
         ]);
 
         Subscription::create([
-            'store_id'             => $this->otherStore->id,
+            'store_id' => $this->otherStore->id,
             'subscription_plan_id' => $this->plan->id,
-            'start_date'           => Carbon::today()->subDays(5),
-            'end_date'             => Carbon::today()->addDays(25),
-            'status'               => SubscriptionStatus::ACTIVE,
+            'start_date' => Carbon::today()->subDays(5),
+            'end_date' => Carbon::today()->addDays(25),
+            'status' => SubscriptionStatus::ACTIVE,
         ]);
     }
 
@@ -112,10 +116,10 @@ class SupplierRelationshipTest extends TestCase
     private function makeSupplier(Store $store, array $attrs = []): Supplier
     {
         return Supplier::create(array_merge([
-            'store_id'   => $store->id,
-            'name'       => 'Supplier ' . uniqid(),
-            'phone'      => '9900000000',
-            'status'     => 'active',
+            'store_id' => $store->id,
+            'name' => 'Supplier '.uniqid(),
+            'phone' => '9900000000',
+            'status' => 'active',
             'created_by' => $this->owner->id,
         ], $attrs));
     }
@@ -147,16 +151,16 @@ class SupplierRelationshipTest extends TestCase
         $supplier = $this->makeSupplier($this->store);
 
         $this->login()->post(route('store.suppliers.notes.store', $supplier), [
-            'type'    => 'meeting',
+            'type' => 'meeting',
             'subject' => 'Pricing discussion',
-            'body'    => 'Discussed bulk discount of 5% for orders over 50k.',
+            'body' => 'Discussed bulk discount of 5% for orders over 50k.',
         ])->assertRedirect();
 
         $this->assertDatabaseHas('contact_notes', [
             'notable_type' => Supplier::class,
-            'notable_id'   => $supplier->id,
-            'store_id'     => $this->store->id,
-            'type'         => 'meeting',
+            'notable_id' => $supplier->id,
+            'store_id' => $this->store->id,
+            'type' => 'meeting',
         ]);
     }
 
@@ -179,21 +183,21 @@ class SupplierRelationshipTest extends TestCase
         $supplier = $this->makeSupplier($this->store);
 
         $note = ContactNote::create([
-            'store_id'       => $this->store->id,
-            'notable_type'   => Supplier::class,
-            'notable_id'     => $supplier->id,
-            'type'           => 'followup',
-            'body'           => 'Call about invoice.',
+            'store_id' => $this->store->id,
+            'notable_type' => Supplier::class,
+            'notable_id' => $supplier->id,
+            'type' => 'followup',
+            'body' => 'Call about invoice.',
             'follow_up_date' => now()->addDay()->toDateString(),
             'follow_up_done' => false,
-            'created_by'     => $this->owner->id,
+            'created_by' => $this->owner->id,
         ]);
 
         $this->login()->patch(route('store.suppliers.notes.done', [$supplier, $note]))
             ->assertRedirect();
 
         $this->assertDatabaseHas('contact_notes', [
-            'id'             => $note->id,
+            'id' => $note->id,
             'follow_up_done' => true,
         ]);
     }
@@ -205,12 +209,12 @@ class SupplierRelationshipTest extends TestCase
         $supplier = $this->makeSupplier($this->store);
 
         $note = ContactNote::create([
-            'store_id'     => $this->store->id,
+            'store_id' => $this->store->id,
             'notable_type' => Supplier::class,
-            'notable_id'   => $supplier->id,
-            'type'         => 'note',
-            'body'         => 'To delete.',
-            'created_by'   => $this->owner->id,
+            'notable_id' => $supplier->id,
+            'type' => 'note',
+            'body' => 'To delete.',
+            'created_by' => $this->owner->id,
         ]);
 
         $this->login()->delete(route('store.suppliers.notes.destroy', [$supplier, $note]))
@@ -237,8 +241,8 @@ class SupplierRelationshipTest extends TestCase
     public function test_supplier_crm_fields_are_stored(): void
     {
         $supplier = $this->makeSupplier($this->store, [
-            'tags'          => ['pharma', 'generic'],
-            'credit_limit'  => 100000,
+            'tags' => ['pharma', 'generic'],
+            'credit_limit' => 100000,
             'payment_terms' => 'Net 30',
         ]);
 

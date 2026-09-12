@@ -244,6 +244,62 @@
     </div>
     @endif
 
+    <!-- Sales Returns against this Invoice (if any) -->
+    @if($sale->returns && $sale->returns->count() > 0)
+    <div class="bg-white rounded-2xl border border-rose-200/80 shadow-sm overflow-hidden">
+        <div class="p-4 border-b border-rose-100 bg-rose-50/40 flex items-center justify-between">
+            <div>
+                <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Processed Returns against this Sale ({{ $sale->returns->count() }})</h2>
+                <span class="text-xs text-slate-500">Restocked batch medicines, customer refunds, and dues adjusted.</span>
+            </div>
+            <span class="font-bold text-xs text-rose-700 font-mono">Total Returned: ₹{{ number_format($sale->totalReturned(), 2) }}</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-50 text-slate-500 font-bold border-b border-slate-100">
+                    <tr>
+                        <th class="py-3 px-4">Return #</th>
+                        <th class="py-3 px-4">Date</th>
+                        <th class="py-3 px-4">Reason</th>
+                        <th class="py-3 px-4">Returned Items</th>
+                        <th class="py-3 px-4">Return Value</th>
+                        <th class="py-3 px-4">Refund Paid</th>
+                        <th class="py-3 px-4">Due Adjusted</th>
+                        <th class="py-3 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                    @foreach($sale->returns as $ret)
+                    <tr>
+                        <td class="py-3 px-4 font-mono font-bold text-[#4b55c8]">
+                            <a href="{{ route('store.sales-returns.show', $ret->id) }}" class="hover:underline">
+                                {{ $ret->return_number }}
+                            </a>
+                        </td>
+                        <td class="py-3 px-4">{{ $ret->return_date->format('d M Y') }}</td>
+                        <td class="py-3 px-4">{{ $ret->reason }}</td>
+                        <td class="py-3 px-4 font-bold">{{ $ret->items->sum('quantity') }} units</td>
+                        <td class="py-3 px-4 font-black text-slate-900">₹{{ number_format($ret->grand_total, 2) }}</td>
+                        <td class="py-3 px-4 font-black text-amber-600">₹{{ number_format($ret->refund_amount, 2) }}</td>
+                        <td class="py-3 px-4 font-black text-emerald-600">₹{{ number_format($ret->adjustment_amount, 2) }}</td>
+                        <td class="py-3 px-4 text-right">
+                            <div class="flex items-center justify-end gap-1">
+                                <a href="{{ route('store.sales-returns.receipt', $ret->id) }}" target="_blank" class="p-1.5 text-slate-500 hover:text-[#4b55c8] hover:bg-slate-100 rounded-lg transition" title="Print Credit Note">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                </a>
+                                <a href="{{ route('store.sales-returns.show', $ret->id) }}" class="px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-lg transition">
+                                    View
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @endif
+
     <!-- System Audit Information Card -->
     <div class="bg-slate-50 rounded-2xl border border-slate-200/80 p-4 text-xs text-slate-500 flex flex-wrap items-center justify-between gap-3">
         <div>

@@ -3,15 +3,12 @@
 namespace Tests\Feature;
 
 use App\Enums\BillingCycle;
-use App\Enums\PaymentMethod;
 use App\Enums\PlanStatus;
 use App\Enums\SaleStatus;
-use App\Enums\StorePaymentType;
 use App\Enums\StoreStatus;
 use App\Enums\SubscriptionStatus;
 use App\Enums\UserRole;
 use App\Models\Batch;
-use App\Models\Customer;
 use App\Models\Medicine;
 use App\Models\Sale;
 use App\Models\Store;

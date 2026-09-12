@@ -161,20 +161,38 @@ class Sale extends Model
             ->whereNotNull('hold_reference');
     }
 
+    public function totalReturned(): float
+    {
+        return (float) $this->returns()->where('status', 'completed')->sum('grand_total');
+    }
+
+    public function totalAdjusted(): float
+    {
+        return (float) $this->returns()->where('status', 'completed')->sum('adjustment_amount');
+    }
+
+    public function totalRefunded(): float
+    {
+        return (float) $this->returns()->where('status', 'completed')->sum('refund_amount');
+    }
+
     public function outstandingAmount(): float
     {
-        return max(0.00, round((float) $this->grand_total - (float) $this->paid_amount, 2));
+        $adjusted = $this->totalAdjusted();
+
+        return max(0.00, round((float) $this->grand_total - (float) $this->paid_amount - $adjusted, 2));
     }
 
     public function updatePaymentStatus(): void
     {
         $paid = (float) $this->paid_amount;
-        $total = (float) $this->grand_total;
+        $adjusted = $this->totalAdjusted();
+        $outstanding = $this->outstandingAmount();
 
-        if ($paid <= 0) {
-            $this->payment_status = PaymentStatus::UNPAID;
-        } elseif ($paid >= $total) {
+        if ($outstanding <= 0) {
             $this->payment_status = PaymentStatus::PAID;
+        } elseif ($paid <= 0 && $adjusted <= 0) {
+            $this->payment_status = PaymentStatus::UNPAID;
         } else {
             $this->payment_status = PaymentStatus::PARTIAL;
         }

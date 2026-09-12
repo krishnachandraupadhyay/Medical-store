@@ -18,9 +18,13 @@ class StoreOwnerSettingsTest extends TestCase
     use RefreshDatabase;
 
     protected Store $storeA;
+
     protected Store $storeB;
+
     protected User $ownerA;
+
     protected User $ownerB;
+
     protected User $superAdmin;
 
     protected function setUp(): void

@@ -281,12 +281,13 @@ Route::prefix('store')->name('store.')->group(function () {
             Route::post('/{sale}/record-payment', [SaleController::class, 'recordPayment'])->name('record-payment')->middleware('permission:customer_payments.create');
         });
 
-        // Sales Return Routes (Phase 20)
+        // Sales Return Routes (Phase 20 / Phase 31)
         Route::middleware(['feature:sales_return', 'permission:sales.return'])->prefix('sales-returns')->name('sales-returns.')->group(function () {
             Route::get('/', [SalesReturnController::class, 'index'])->name('index');
             Route::get('/create', [SalesReturnController::class, 'create'])->name('create');
             Route::post('/', [SalesReturnController::class, 'store'])->name('store');
             Route::get('/{salesReturn}', [SalesReturnController::class, 'show'])->name('show');
+            Route::get('/{salesReturn}/receipt', [SalesReturnController::class, 'receipt'])->name('receipt');
         });
 
         // Purchase Return Routes (Phase 20)

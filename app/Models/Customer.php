@@ -136,6 +136,11 @@ class Customer extends Model
         return $this->hasMany(Sale::class, 'customer_id');
     }
 
+    public function salesReturns(): HasMany
+    {
+        return $this->hasMany(SalesReturn::class, 'customer_id');
+    }
+
     public function payments(): HasMany
     {
         return $this->hasMany(StorePayment::class, 'customer_id');
@@ -248,19 +253,35 @@ class Customer extends Model
 
     // ─── Financial Helpers ────────────────────────────────────────────────────
 
+    public function totalReturns(): float
+    {
+        return (float) $this->salesReturns()->where('status', 'completed')->sum('grand_total');
+    }
+
+    public function totalRefunded(): float
+    {
+        return (float) $this->salesReturns()->where('status', 'completed')->sum('refund_amount');
+    }
+
     public function totalPurchases(): float
     {
-        return (float) $this->sales()->where('status', 'completed')->sum('grand_total');
+        $grossPurchases = (float) $this->sales()->where('status', 'completed')->sum('grand_total');
+        $returns = $this->totalReturns();
+
+        return max(0.00, round($grossPurchases - $returns, 2));
     }
 
     public function totalPaid(): float
     {
-        return (float) $this->sales()->where('status', 'completed')->sum('paid_amount');
+        $grossPaid = (float) $this->sales()->where('status', 'completed')->sum('paid_amount');
+        $refunded = $this->totalRefunded();
+
+        return max(0.00, round($grossPaid - $refunded, 2));
     }
 
     public function outstandingAmount(): float
     {
-        return max(0, $this->totalPurchases() - $this->totalPaid());
+        return max(0.00, round($this->totalPurchases() - $this->totalPaid(), 2));
     }
 
     public function getOutstandingBalanceAttribute(): float

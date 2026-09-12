@@ -9,7 +9,6 @@ use App\Enums\PlanStatus;
 use App\Enums\StoreStatus;
 use App\Enums\SubscriptionStatus;
 use App\Enums\UserRole;
-use App\Models\AuditLog;
 use App\Models\Role;
 use App\Models\Store;
 use App\Models\Subscription;
@@ -71,11 +70,11 @@ class StoreStaffManagementTest extends TestCase
         ]);
 
         Subscription::create([
-            'store_id'             => $this->store->id,
+            'store_id' => $this->store->id,
             'subscription_plan_id' => $this->plan->id,
-            'status'               => SubscriptionStatus::ACTIVE,
-            'start_date'           => Carbon::today()->subDays(5)->toDateString(),
-            'end_date'             => Carbon::today()->addDays(25)->toDateString(),
+            'status' => SubscriptionStatus::ACTIVE,
+            'start_date' => Carbon::today()->subDays(5)->toDateString(),
+            'end_date' => Carbon::today()->addDays(25)->toDateString(),
         ]);
 
         $this->salesRole = Role::where('slug', 'sales-staff')->whereNull('store_id')->firstOrFail();
@@ -173,15 +172,15 @@ class StoreStaffManagementTest extends TestCase
     public function test_cannot_assign_role_belonging_to_another_store(): void
     {
         $otherStore = Store::create([
-            'code'       => 'MED-OTHER99',
-            'name'       => 'Other Store',
-            'email'      => 'other@store.test',
-            'mobile'     => '9800000099',
-            'city'       => 'Chennai',
-            'state'      => 'Tamil Nadu',
-            'pincode'    => '600001',
+            'code' => 'MED-OTHER99',
+            'name' => 'Other Store',
+            'email' => 'other@store.test',
+            'mobile' => '9800000099',
+            'city' => 'Chennai',
+            'state' => 'Tamil Nadu',
+            'pincode' => '600001',
             'store_type' => 'Retail',
-            'status'     => StoreStatus::ACTIVE,
+            'status' => StoreStatus::ACTIVE,
         ]);
 
         $otherStoreRole = Role::create([
