@@ -13,7 +13,7 @@
                 </a>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black text-[#1e2746] tracking-tight mt-1">Add New Supplier</h1>
-            <p class="text-xs sm:text-sm text-[#64748b] mt-0.5">Register a pharmaceutical distributor or vendor for purchase orders.</p>
+            <p class="text-xs sm:text-sm text-[#64748b] mt-0.5">Register a pharmaceutical distributor or vendor with ledger balance terms.</p>
         </div>
     </div>
 
@@ -70,10 +70,15 @@
         <!-- Tax & Legal -->
         <div>
             <h3 class="text-sm font-extrabold text-[#1e2746] border-b border-slate-100 pb-2 mb-4">Tax & Regulatory Compliance</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">GST Identification Number (GSTIN)</label>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">GSTIN</label>
                     <input type="text" name="gst_number" value="{{ old('gst_number') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm font-mono focus:border-[#4b55c8] outline-none" placeholder="e.g. 27AAAAA0000A1Z5">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">PAN Number</label>
+                    <input type="text" name="pan_number" value="{{ old('pan_number') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm font-mono focus:border-[#4b55c8] outline-none uppercase" placeholder="e.g. ABCDE1234F">
                 </div>
 
                 <div>
@@ -81,6 +86,38 @@
                     <input type="text" name="drug_license_no" value="{{ old('drug_license_no') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm focus:border-[#4b55c8] outline-none" placeholder="e.g. DL-20B-123456">
                 </div>
             </div>
+        </div>
+
+        <!-- Financial Terms & Opening Balance -->
+        <div>
+            <h3 class="text-sm font-extrabold text-[#1e2746] border-b border-slate-100 pb-2 mb-4">Financial Terms & Opening Balance</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Opening Balance (₹)</label>
+                    <input type="number" step="0.01" min="0" name="opening_balance" value="{{ old('opening_balance', '0.00') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm font-mono focus:border-[#4b55c8] outline-none" placeholder="0.00">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Balance Type</label>
+                    <select name="opening_balance_type" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm focus:border-[#4b55c8] outline-none">
+                        <option value="payable" {{ old('opening_balance_type', 'payable') === 'payable' ? 'selected' : '' }}>Payable (We owe supplier)</option>
+                        <option value="advance" {{ old('opening_balance_type') === 'advance' ? 'selected' : '' }}>Advance (Prepaid to supplier)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Credit Limit (₹)</label>
+                    <input type="number" step="0.01" min="0" name="credit_limit" value="{{ old('credit_limit') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm font-mono focus:border-[#4b55c8] outline-none" placeholder="e.g. 50000.00">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Payment Terms</label>
+                    <input type="text" name="payment_terms" value="{{ old('payment_terms') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm focus:border-[#4b55c8] outline-none" placeholder="e.g. Net 30, COD, 15 Days">
+                </div>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-2">
+                Setting an opening balance initialises the supplier ledger statement. Payable increases your liability; Advance acts as store credit.
+            </p>
         </div>
 
         <!-- Address Information -->
@@ -125,7 +162,7 @@
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">Internal Notes</label>
-                    <input type="text" name="notes" value="{{ old('notes') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm focus:border-[#4b55c8] outline-none" placeholder="Credit period, delivery terms, bank details...">
+                    <input type="text" name="notes" value="{{ old('notes') }}" class="w-full px-4 py-2.5 rounded-2xl border border-slate-200 text-xs sm:text-sm focus:border-[#4b55c8] outline-none" placeholder="Delivery schedule, bank details, credit notes...">
                 </div>
             </div>
         </div>

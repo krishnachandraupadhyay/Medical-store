@@ -16,6 +16,7 @@ class Supplier extends Model
 
     protected $fillable = [
         'store_id',
+        'supplier_code',
         'name',
         'company_name',
         'contact_person',
@@ -23,11 +24,14 @@ class Supplier extends Model
         'alternate_phone',
         'email',
         'gst_number',
+        'pan_number',
         'drug_license_no',
         'address',
         'city',
         'state',
         'pincode',
+        'opening_balance',
+        'opening_balance_type',
         'status',
         'notes',
         'tags',
@@ -43,8 +47,28 @@ class Supplier extends Model
         return [
             'tags' => 'array',
             'last_contacted_at' => 'datetime',
-            'credit_limit' => 'float',
+            'credit_limit' => 'decimal:2',
+            'opening_balance' => 'decimal:2',
         ];
+    }
+
+    public static function generateSupplierCode(int $storeId): string
+    {
+        $prefix = 'SUP-';
+        $latest = static::withTrashed()
+            ->where('store_id', $storeId)
+            ->where('supplier_code', 'like', $prefix.'%')
+            ->orderByDesc('id')
+            ->lockForUpdate()
+            ->first();
+
+        if ($latest && preg_match('/-(\d+)$/', $latest->supplier_code, $matches)) {
+            $next = (int) $matches[1] + 1;
+        } else {
+            $next = 1;
+        }
+
+        return $prefix.str_pad((string) $next, 6, '0', STR_PAD_LEFT);
     }
 
     // ─── Relationships ────────────────────────────────────────────────────────
@@ -57,6 +81,11 @@ class Supplier extends Model
     public function purchases(): HasMany
     {
         return $this->hasMany(Purchase::class, 'supplier_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(StorePayment::class, 'supplier_id');
     }
 
     public function contactNotes(): MorphMany
@@ -96,15 +125,28 @@ class Supplier extends Model
 
         return $query->where(function (Builder $q) use ($term) {
             $q->where('name', 'like', "%{$term}%")
+                ->orWhere('supplier_code', 'like', "%{$term}%")
                 ->orWhere('company_name', 'like', "%{$term}%")
                 ->orWhere('contact_person', 'like', "%{$term}%")
                 ->orWhere('phone', 'like', "%{$term}%")
+                ->orWhere('alternate_phone', 'like', "%{$term}%")
                 ->orWhere('email', 'like', "%{$term}%")
-                ->orWhere('gst_number', 'like', "%{$term}%");
+                ->orWhere('gst_number', 'like', "%{$term}%")
+                ->orWhere('pan_number', 'like', "%{$term}%");
         });
     }
 
     // ─── Financial Helpers ────────────────────────────────────────────────────
+
+    public function openingBalancePayable(): float
+    {
+        $amount = (float) ($this->opening_balance ?? 0.00);
+        if ($this->opening_balance_type === 'advance') {
+            return -$amount;
+        }
+
+        return $amount;
+    }
 
     public function totalPurchased(): float
     {
@@ -113,12 +155,30 @@ class Supplier extends Model
 
     public function totalPaid(): float
     {
-        return (float) $this->purchases()->where('status', 'completed')->sum('paid_amount');
+        $purchasePaid = (float) $this->purchases()->where('status', 'completed')->sum('paid_amount');
+        $directPaid = (float) $this->payments()->whereNull('purchase_id')->where(function ($q) {
+            $q->where('status', 'completed')->orWhereNull('status');
+        })->sum('amount');
+
+        return round($purchasePaid + $directPaid, 2);
     }
 
     public function outstandingAmount(): float
     {
-        return max(0, $this->totalPurchased() - $this->totalPaid());
+        $opening = $this->openingBalancePayable();
+        $purchased = $this->totalPurchased();
+        $paid = $this->totalPaid();
+
+        return round($opening + $purchased - $paid, 2);
+    }
+
+    public function availableCredit(): ?float
+    {
+        if ($this->credit_limit === null || (float) $this->credit_limit <= 0) {
+            return null;
+        }
+
+        return round(max(0.00, (float) $this->credit_limit - $this->outstandingAmount()), 2);
     }
 
     public function purchasesCount(): int
@@ -131,5 +191,16 @@ class Supplier extends Model
         $purchase = $this->purchases()->where('status', 'completed')->latest('purchase_date')->first();
 
         return $purchase ? $purchase->purchase_date->format('d M Y') : null;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function toggleStatus(): void
+    {
+        $this->status = $this->isActive() ? 'inactive' : 'active';
+        $this->save();
     }
 }

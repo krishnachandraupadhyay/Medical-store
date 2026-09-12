@@ -12,6 +12,7 @@ use App\Models\Purchase;
 use App\Models\Sale;
 use App\Models\Store;
 use App\Models\StorePayment;
+use App\Models\Supplier;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -146,6 +147,64 @@ class PaymentService
                 AuditAction::CREATED,
                 AuditModule::STORE_PAYMENTS,
                 "Recorded supplier payment #{$payment->payment_number} of ₹{$amount} for Purchase #{$lockedPurchase->invoice_number}.",
+                $payment,
+                null,
+                $payment->toArray()
+            );
+
+            DB::afterCommit(fn () => event(new SupplierPaymentRecorded($payment)));
+
+            return $payment;
+        });
+    }
+
+    /**
+     * Record a direct/on-account payment made to a supplier.
+     * If purchase_id is provided, delegates to recordPurchasePayment.
+     *
+     * @throws ValidationException
+     */
+    public function recordSupplierDirectPayment(Store $store, Supplier $supplier, array $data, ?int $userId = null): StorePayment
+    {
+        if (! empty($data['purchase_id'])) {
+            $purchase = Purchase::where('id', $data['purchase_id'])
+                ->where('store_id', $store->id)
+                ->where('supplier_id', $supplier->id)
+                ->firstOrFail();
+
+            return $this->recordPurchasePayment($store, $purchase, $data, $userId);
+        }
+
+        return DB::transaction(function () use ($store, $supplier, $data, $userId) {
+            $amount = round((float) ($data['amount'] ?? 0.00), 2);
+            if ($amount <= 0) {
+                throw ValidationException::withMessages([
+                    'amount' => 'Payment amount must be greater than zero.',
+                ]);
+            }
+
+            $paymentMethod = $data['payment_method'] ?? PaymentMethod::BANK_TRANSFER->value;
+            $paymentDate = $data['payment_date'] ?? now()->toDateString();
+            $paymentNumber = StorePayment::generatePaymentNumber($store->id);
+
+            $payment = StorePayment::create([
+                'store_id' => $store->id,
+                'payment_number' => $paymentNumber,
+                'type' => StorePaymentType::PURCHASE_PAYMENT,
+                'payment_date' => $paymentDate,
+                'amount' => $amount,
+                'payment_method' => $paymentMethod,
+                'purchase_id' => null,
+                'supplier_id' => $supplier->id,
+                'reference_number' => $data['reference_number'] ?? null,
+                'notes' => $data['notes'] ?? null,
+                'created_by' => $userId,
+            ]);
+
+            AuditLogger::log(
+                AuditAction::CREATED,
+                AuditModule::STORE_PAYMENTS,
+                "Recorded direct supplier payment #{$payment->payment_number} of ₹{$amount} for Supplier {$supplier->name}.",
                 $payment,
                 null,
                 $payment->toArray()

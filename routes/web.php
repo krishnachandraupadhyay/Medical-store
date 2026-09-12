@@ -169,15 +169,20 @@ Route::prefix('store')->name('store.')->group(function () {
             Route::delete('/{medicine}', [MedicineController::class, 'destroy'])->name('destroy')->middleware('permission:medicines.delete');
         });
 
-        // Supplier Management Routes (Phase 18) - Guarded by Feature Access Control
+        // Supplier Management Routes (Phase 18 & Phase 33) - Guarded by Feature Access Control
         Route::middleware('feature:supplier_management')->prefix('suppliers')->name('suppliers.')->group(function () {
+            Route::get('/outstanding', [SupplierController::class, 'outstandingReport'])->name('outstanding')->middleware('permission:suppliers.view');
             Route::get('/', [SupplierController::class, 'index'])->name('index')->middleware('permission:suppliers.view');
             Route::get('/create', [SupplierController::class, 'create'])->name('create')->middleware('permission:suppliers.create');
             Route::post('/', [SupplierController::class, 'store'])->name('store')->middleware('permission:suppliers.create');
             Route::get('/{supplier}', [SupplierController::class, 'show'])->name('show')->middleware('permission:suppliers.view');
             Route::get('/{supplier}/edit', [SupplierController::class, 'edit'])->name('edit')->middleware('permission:suppliers.edit');
             Route::put('/{supplier}', [SupplierController::class, 'update'])->name('update')->middleware('permission:suppliers.edit');
+            Route::patch('/{supplier}/toggle-status', [SupplierController::class, 'toggleStatus'])->name('toggle-status')->middleware('permission:suppliers.edit');
             Route::delete('/{supplier}', [SupplierController::class, 'destroy'])->name('destroy')->middleware('permission:suppliers.delete');
+            Route::get('/{supplier}/ledger', [SupplierController::class, 'ledger'])->name('ledger')->middleware('permission:suppliers.view');
+            Route::get('/{supplier}/ledger/print', [SupplierController::class, 'printLedger'])->name('ledger.print')->middleware('permission:suppliers.view');
+            Route::post('/{supplier}/payments', [SupplierController::class, 'recordPayment'])->name('record-payment')->middleware('permission:supplier_payments.create');
             // Supplier Notes (Phase 25)
             Route::post('/{supplier}/notes', [SupplierController::class, 'storeNote'])->name('notes.store')->middleware('permission:suppliers.edit');
             Route::patch('/{supplier}/notes/{note}/done', [SupplierController::class, 'markNoteFollowUpDone'])->name('notes.done')->middleware('permission:suppliers.edit');
