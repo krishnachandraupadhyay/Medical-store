@@ -10,6 +10,7 @@ enum PaymentMethod: string
     case NET_BANKING = 'net_banking';
     case CASH = 'cash';
     case BANK_TRANSFER = 'bank_transfer';
+    case CHEQUE = 'cheque';
     case OTHER = 'other';
 
     public function label(): string
@@ -21,6 +22,7 @@ enum PaymentMethod: string
             self::NET_BANKING => 'Net Banking',
             self::CASH => 'Cash',
             self::BANK_TRANSFER => 'Bank Transfer (NEFT/IMPS)',
+            self::CHEQUE => 'Cheque',
             self::OTHER => 'Other',
         };
     }

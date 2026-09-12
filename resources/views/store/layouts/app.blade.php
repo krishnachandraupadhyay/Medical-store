@@ -97,6 +97,8 @@
                 <nav class="px-4 py-4 space-y-1 overflow-y-auto max-h-[calc(100vh-210px)]">
                     
                     <!-- 1. Dashboard (Active) -->
+                    <!-- 1. Dashboard (Active) -->
+                    @if (auth()->user()->hasPermission('dashboard.view'))
                     <a href="{{ route('store.dashboard') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.dashboard') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 {{ request()->routeIs('store.dashboard') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -105,118 +107,216 @@
                             <span>Dashboard</span>
                         </div>
                     </a>
+                    @endif
 
-                    <!-- 2. Medicines (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- 2. Medicines (Phase 16 - Active Module) -->
+                    @hasFeature('medicine_management')
+                    @if (auth()->user()->hasPermission('medicines.view'))
+                    <a href="{{ route('store.medicines.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.medicines.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.medicines.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
                             </svg>
                             <span>Medicines</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Phase 14</span>
-                    </div>
+                    </a>
+                    @endif
+                    @endhasFeature
 
-                    <!-- 3. Inventory (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- 3. Inventory (Phase 17) -->
+                    @hasFeature('inventory_management')
+                    @if (auth()->user()->hasPermission('inventory.view'))
+                    <a href="{{ route('store.inventory.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.inventory.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.inventory.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
                             </svg>
-                            <span>Inventory</span>
+                            <span>Inventory & Batches</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Phase 14</span>
-                    </div>
+                    </a>
+                    @endif
+                    @endhasFeature
 
-                    <!-- 4. Purchases (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- 4. Purchases (Phase 18) -->
+                    @hasFeature('purchase_management')
+                    @if (auth()->user()->hasPermission('purchases.view'))
+                    <a href="{{ route('store.purchases.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.purchases.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.purchases.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
                             <span>Purchases</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Soon</span>
-                    </div>
+                    </a>
+                    @endif
+                    @endhasFeature
 
-                    <!-- 5. Sales / Billing (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- 5. Suppliers (Phase 18) -->
+                    @hasFeature('supplier_management')
+                    @if (auth()->user()->hasPermission('suppliers.view'))
+                    <a href="{{ route('store.suppliers.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.suppliers.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                            </svg>
-                            <span>Sales & Billing</span>
-                        </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Soon</span>
-                    </div>
-
-                    <!-- 6. Customers (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-                            </svg>
-                            <span>Customers</span>
-                        </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Soon</span>
-                    </div>
-
-                    <!-- 7. Suppliers (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.suppliers.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                             </svg>
                             <span>Suppliers</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Soon</span>
-                    </div>
+                    </a>
+                    @endif
+                    @endhasFeature
 
-                    <!-- 8. Returns (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- POS Terminal (Phase 19) -->
+                    @hasFeature('pos')
+                    @if (auth()->user()->hasPermission('sales.create'))
+                    <a href="{{ route('store.pos.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition {{ request()->routeIs('store.pos.*') ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25' : 'text-emerald-700 bg-emerald-50/70 hover:bg-emerald-100/70' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.pos.*') ? 'text-white' : 'text-emerald-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
                             </svg>
-                            <span>Returns</span>
+                            <span>POS Billing</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Soon</span>
-                    </div>
+                        <span class="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded {{ request()->routeIs('store.pos.*') ? 'bg-white/25 text-white' : 'bg-emerald-200/70 text-emerald-800' }}">Quick</span>
+                    </a>
+                    @endif
+                    @endhasFeature
 
-                    <!-- 9. Expenses (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- Sales / Invoices (Phase 19) -->
+                    @hasFeature('sales_management')
+                    @if (auth()->user()->hasPermission('sales.view'))
+                    <a href="{{ route('store.sales.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.sales.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.sales.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                            <span>Sales Invoices</span>
+                        </div>
+                    </a>
+                    @endif
+                    @endhasFeature
+
+                    <!-- Customers (Phase 19) -->
+                    @hasFeature('customer_management')
+                    @if (auth()->user()->hasPermission('customers.view'))
+                    <a href="{{ route('store.customers.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.customers.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.customers.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            <span>Customers</span>
+                        </div>
+                    </a>
+                    @endif
+                    @endhasFeature
+
+                    <!-- Sales Returns (Phase 20) -->
+                    @hasFeature('sales_return')
+                    @if (auth()->user()->hasPermission('sales.return'))
+                    <a href="{{ route('store.sales-returns.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.sales-returns.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.sales-returns.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                            </svg>
+                            <span>Sales Returns</span>
+                        </div>
+                    </a>
+                    @endif
+                    @endhasFeature
+
+                    <!-- Purchase Returns (Phase 20) -->
+                    @hasFeature('purchase_return')
+                    @if (auth()->user()->hasPermission('purchases.return'))
+                    <a href="{{ route('store.purchase-returns.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.purchase-returns.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.purchase-returns.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6"/>
+                            </svg>
+                            <span>Purchase Returns</span>
+                        </div>
+                    </a>
+                    @endif
+                    @endhasFeature
+
+                    <!-- Expenses (Phase 21) -->
+                    @hasFeature('expense_management')
+                    @if (auth()->user()->hasPermission('expenses.view'))
+                    <a href="{{ route('store.expenses.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.expenses.*') || request()->routeIs('store.expense-categories.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.expenses.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                             </svg>
                             <span>Expenses</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Soon</span>
-                    </div>
+                    </a>
+                    @endif
+                    @endhasFeature
 
-                    <!-- 10. Reports (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- Payments & Settlements (Phase 21) -->
+                    @if (auth()->user()->hasPermission('customer_payments.view'))
+                    <a href="{{ route('store.payments.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.payments.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.payments.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            <span>Payments & Ledger</span>
+                        </div>
+                    </a>
+                    @endif
+
+                    <!-- Outstanding Receivables / Payables (Phase 21) -->
+                    @if (auth()->user()->hasPermission('reports.view'))
+                    <a href="{{ route('store.outstanding.customers') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.outstanding.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.outstanding.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l4-2 4 2 4-2 4 2z"/>
+                            </svg>
+                            <span>Outstanding Dues</span>
+                        </div>
+                    </a>
+                    @endif
+
+                    <!-- Reports (Phase 22) -->
+                    @hasFeature('reports')
+                    @if (auth()->user()->hasPermission('reports.view'))
+                    <a href="{{ route('store.reports.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.reports.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.reports.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                             </svg>
-                            <span>Reports</span>
+                            <span>Business Reports</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Soon</span>
-                    </div>
+                    </a>
+                    @endif
+                    @endhasFeature
 
-                    <!-- 11. Staff (Placeholder) -->
-                    <div class="flex items-center justify-between px-3.5 py-2 rounded-2xl text-xs sm:text-sm font-medium text-slate-400 hover:bg-slate-50/60 transition cursor-not-allowed group">
+                    <!-- Notifications (Phase 23) -->
+                    @if (auth()->user()->hasPermission('notifications.view'))
+                    <a href="{{ route('store.notifications.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.notifications.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.notifications.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <span>Notifications</span>
+                        </div>
+                        <span id="sidebarNotificationBadge" class="hidden text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-rose-500 text-white"></span>
+                    </a>
+                    @endif
+
+                    <!-- 11. Staff Management (Phase 26) -->
+                    @hasFeature('staff_management')
+                    @if (auth()->user()->hasPermission('staff.view'))
+                    <a href="{{ route('store.staff.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition {{ request()->routeIs('store.staff.*') || request()->routeIs('store.roles.*') ? 'bg-[#eef2fd] text-[#4b55c8]' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 {{ request()->routeIs('store.staff.*') || request()->routeIs('store.roles.*') ? 'text-[#4b55c8]' : 'text-[#94a3b8]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
                             </svg>
-                            <span>Staff Management</span>
+                            <span>Staff & Roles</span>
                         </div>
-                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-400">Optional</span>
-                    </div>
+                    </a>
+                    @endif
+                    @endhasFeature
 
                     <!-- 12. Store Settings (Phase 14) -->
+                    @if (auth()->user()->hasPermission('settings.view'))
                     <a href="{{ route('store.settings.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-medium transition {{ request()->routeIs('store.settings.*') ? 'bg-[#4b55c8] text-white shadow-md shadow-indigo-200' : 'text-[#64748b] hover:text-[#1e2746] hover:bg-slate-50' }}">
                         <div class="flex items-center gap-3">
                             <svg class="w-5 h-5 {{ request()->routeIs('store.settings.*') ? 'text-white' : 'text-slate-400 group-hover:text-slate-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,6 +326,7 @@
                             <span>Store Settings</span>
                         </div>
                     </a>
+                    @endif
 
                     <!-- 13. Logout -->
                     <form action="{{ route('store.logout') }}" method="POST" class="pt-3 border-t border-slate-100">
@@ -292,14 +393,56 @@
                         <span>Active Pharmacy</span>
                     </span>
 
+                    <!-- Notification Bell Dropdown (Phase 23) -->
+                    <div class="relative" id="notificationDropdownContainer">
+                        <button id="notificationBellBtn" type="button" class="relative p-2.5 rounded-2xl bg-slate-100/80 hover:bg-slate-200/70 text-slate-600 hover:text-slate-900 transition focus:outline-none cursor-pointer" aria-label="Notifications">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <span id="navbarNotificationBadge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white">0</span>
+                        </button>
+
+                        <!-- Dropdown Menu -->
+                        <div id="notificationDropdownMenu" class="hidden absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200/80 z-50 overflow-hidden transform opacity-0 scale-95 transition-all duration-200">
+                            <!-- Dropdown Header -->
+                            <div class="px-4 py-3 bg-gradient-to-r from-slate-50 to-indigo-50/30 border-b border-slate-100 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="font-bold text-slate-800 text-sm">Notifications</span>
+                                    <span id="dropdownUnreadCountBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700">0 new</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button id="markAllReadBtn" type="button" class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer">Mark all read</button>
+                                </div>
+                            </div>
+
+                            <!-- Dropdown List Container -->
+                            <div id="dropdownNotificationsList" class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                                <div class="p-6 text-center text-xs text-slate-400">Loading notifications...</div>
+                            </div>
+
+                            <!-- Dropdown Footer -->
+                            <div class="px-4 py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs">
+                                <a href="{{ route('store.notifications.index') }}" class="font-semibold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                                    <span>View all notifications</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </a>
+                                <a href="{{ route('store.notifications.preferences') }}" class="text-slate-500 hover:text-slate-800" title="Notification Preferences">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Top Profile Chip -->
                     <div class="flex items-center gap-2 pl-2 border-l border-slate-200">
                         <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#4b55c8] to-[#7482f0] flex items-center justify-center text-white font-bold text-xs shadow-sm">
                             {{ substr(auth()->user()->name ?? 'O', 0, 2) }}
                         </div>
                         <div class="hidden md:block text-left">
-                            <span class="text-xs font-bold text-[#1e2746] block leading-tight">{{ auth()->user()->name ?? 'Store Owner' }}</span>
-                            <span class="text-[10px] text-slate-400 font-medium">Store Owner</span>
+                            <span class="text-xs font-bold text-[#1e2746] block leading-tight">{{ auth()->user()->name ?? 'User' }}</span>
+                            <span class="text-[10px] text-slate-400 font-medium">
+                                {{ auth()->user()->isStoreOwner() ? 'Store Owner' : (auth()->user()->staffRole?->name ?? 'Staff') }}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -363,6 +506,164 @@
         openBtn?.addEventListener('click', () => toggleSidebar(true));
         closeBtn?.addEventListener('click', () => toggleSidebar(false));
         backdrop?.addEventListener('click', () => toggleSidebar(false));
+
+        // In-App Notification Center & Dropdown Handler (Phase 23)
+        (function() {
+            const bellBtn = document.getElementById('notificationBellBtn');
+            const dropdown = document.getElementById('notificationDropdownMenu');
+            const container = document.getElementById('notificationDropdownContainer');
+            const navbarBadge = document.getElementById('navbarNotificationBadge');
+            const sidebarBadge = document.getElementById('sidebarNotificationBadge');
+            const dropdownBadge = document.getElementById('dropdownUnreadCountBadge');
+            const listContainer = document.getElementById('dropdownNotificationsList');
+            const markAllBtn = document.getElementById('markAllReadBtn');
+
+            let isOpen = false;
+
+            function updateBadges(count) {
+                if (count > 0) {
+                    if (navbarBadge) {
+                        navbarBadge.textContent = count > 99 ? '99+' : count;
+                        navbarBadge.classList.remove('hidden');
+                    }
+                    if (sidebarBadge) {
+                        sidebarBadge.textContent = count > 99 ? '99+' : count;
+                        sidebarBadge.classList.remove('hidden');
+                    }
+                    if (dropdownBadge) {
+                        dropdownBadge.textContent = `${count} new`;
+                    }
+                } else {
+                    if (navbarBadge) navbarBadge.classList.add('hidden');
+                    if (sidebarBadge) sidebarBadge.classList.add('hidden');
+                    if (dropdownBadge) dropdownBadge.textContent = '0 new';
+                }
+            }
+
+            function renderNotifications(items) {
+                if (!items || items.length === 0) {
+                    listContainer.innerHTML = `
+                        <div class="p-8 text-center">
+                            <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 mb-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <p class="text-xs font-semibold text-slate-700">All caught up!</p>
+                            <p class="text-[11px] text-slate-400 mt-0.5">No new notifications.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '';
+                items.forEach(item => {
+                    const unreadDot = item.is_unread ? `<span class="w-2 h-2 rounded-full bg-indigo-600 flex-shrink-0"></span>` : '';
+                    const bgClass = item.is_unread ? 'bg-indigo-50/20' : '';
+                    html += `
+                        <a href="${item.action_url}" class="block p-3.5 hover:bg-slate-50/80 transition ${bgClass} group">
+                            <div class="flex items-start gap-3">
+                                <div class="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${item.badge_classes}">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-1 mb-0.5">
+                                        <p class="text-xs font-bold text-slate-900 truncate">${item.title}</p>
+                                        ${unreadDot}
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">${item.message}</p>
+                                    <span class="text-[10px] text-slate-400 mt-1 block">${item.time_ago}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                });
+                listContainer.innerHTML = html;
+            }
+
+            async function fetchDropdownData() {
+                try {
+                    const res = await fetch('{{ route("store.notifications.dropdown") }}', {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        updateBadges(data.unread_count);
+                        renderNotifications(data.notifications);
+                    }
+                } catch (e) {
+                    console.error('Failed to load notifications dropdown', e);
+                }
+            }
+
+            async function fetchUnreadCountOnly() {
+                try {
+                    const res = await fetch('{{ route("store.notifications.unread-count") }}', {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        updateBadges(data.unread_count);
+                    }
+                } catch (e) {
+                    // silently fail on background polling
+                }
+            }
+
+            function toggleDropdown(show) {
+                isOpen = (typeof show === 'boolean') ? show : !isOpen;
+                if (isOpen) {
+                    dropdown.classList.remove('hidden');
+                    setTimeout(() => {
+                        dropdown.classList.remove('opacity-0', 'scale-95');
+                        dropdown.classList.add('opacity-100', 'scale-100');
+                    }, 10);
+                    fetchDropdownData();
+                } else {
+                    dropdown.classList.remove('opacity-100', 'scale-100');
+                    dropdown.classList.add('opacity-0', 'scale-95');
+                    setTimeout(() => {
+                        dropdown.classList.add('hidden');
+                    }, 150);
+                }
+            }
+
+            bellBtn?.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleDropdown();
+            });
+
+            document.addEventListener('click', (e) => {
+                if (isOpen && container && !container.contains(e.target)) {
+                    toggleDropdown(false);
+                }
+            });
+
+            markAllBtn?.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                try {
+                    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '{{ csrf_token() }}';
+                    const res = await fetch('{{ route("store.notifications.mark-all-read") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrf,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    if (res.ok) {
+                        updateBadges(0);
+                        fetchDropdownData();
+                    }
+                } catch (e) {
+                    console.error('Failed to mark all as read', e);
+                }
+            });
+
+            // Initial count fetch on page load
+            fetchUnreadCountOnly();
+
+            // Background polling every 60s
+            setInterval(fetchUnreadCountOnly, 60000);
+        })();
     </script>
     @stack('scripts')
 </body>

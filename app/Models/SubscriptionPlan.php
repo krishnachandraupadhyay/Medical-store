@@ -69,29 +69,53 @@ class SubscriptionPlan extends Model
     public static function supportedFeatures(): array
     {
         return [
+            'medicine_management' => [
+                'name' => 'Medicine Master Management',
+                'description' => 'Medicine master catalog, categories, formulations, drug strengths, and HSN codes.',
+            ],
             'inventory_management' => [
                 'name' => 'Inventory Management',
                 'description' => 'Real-time medicine stock tracking, batch numbers, expiry alerts, and stock adjustments.',
+            ],
+            'advanced_inventory_control' => [
+                'name' => 'Advanced Inventory Control',
+                'description' => 'Stock reconciliation, physical audits, loss/damage write-offs, batch blocking, and inventory valuation.',
             ],
             'purchase_management' => [
                 'name' => 'Purchase Management',
                 'description' => 'Supplier purchase orders, GRN receiving, vendor bills, and supplier ledger.',
             ],
-            'sales_management' => [
-                'name' => 'Sales & Billing',
-                'description' => 'Fast billing checkout, discount rules, GST tax calculation, and digital invoices.',
-            ],
-            'pos' => [
-                'name' => 'Point of Sale (POS)',
-                'description' => 'Barcode scanner support, shortcut POS terminal, thermal receipt printing.',
+            'supplier_management' => [
+                'name' => 'Supplier Management',
+                'description' => 'Supplier directory, drug license tracking, vendor payment balances, and supplier profiles.',
             ],
             'customer_management' => [
                 'name' => 'Customer Management',
                 'description' => 'Customer directory, purchase history, prescription records, and credit tracking.',
             ],
+            'pos' => [
+                'name' => 'Point of Sale (POS)',
+                'description' => 'Barcode scanner support, shortcut POS terminal, thermal receipt printing.',
+            ],
+            'sales_management' => [
+                'name' => 'Sales & Billing',
+                'description' => 'Fast billing checkout, discount rules, GST tax calculation, and digital invoices.',
+            ],
+            'sales_return' => [
+                'name' => 'Sales Return',
+                'description' => 'Customer medicine returns, batch re-stocking, and credit note issuance.',
+            ],
+            'purchase_return' => [
+                'name' => 'Purchase Return',
+                'description' => 'Damaged/expired stock return to supplier and vendor debit notes.',
+            ],
             'staff_management' => [
                 'name' => 'Staff Management',
                 'description' => 'Pharmacist and cashier role assignments, shift tracking, and staff activity audits.',
+            ],
+            'expense_management' => [
+                'name' => 'Expense Management',
+                'description' => 'Pharmacy store operating expenses, utilities, petty cash, and expense category records.',
             ],
             'reports' => [
                 'name' => 'Reports & Analytics',
@@ -117,7 +141,7 @@ class SubscriptionPlan extends Model
             ],
             'max_medicines' => [
                 'label' => 'Maximum Medicine Products',
-                'description' => 'Catalog item capacity in inventory (-1 for unlimited)',
+                'description' => 'Catalog item capacity in medicine master (-1 for unlimited)',
                 'default' => 500,
             ],
             'max_invoices' => [
@@ -129,6 +153,16 @@ class SubscriptionPlan extends Model
                 'label' => 'Maximum Customer Records',
                 'description' => 'Patient & customer profiles stored (-1 for unlimited)',
                 'default' => 500,
+            ],
+            'max_suppliers' => [
+                'label' => 'Maximum Suppliers',
+                'description' => 'Supplier profiles stored per store (-1 for unlimited)',
+                'default' => 50,
+            ],
+            'max_storage' => [
+                'label' => 'Document & File Storage (MB)',
+                'description' => 'Storage limit for invoices and attachments in MB (-1 for unlimited)',
+                'default' => 1024,
             ],
         ];
     }

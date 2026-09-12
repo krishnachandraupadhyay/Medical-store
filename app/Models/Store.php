@@ -71,6 +71,22 @@ class Store extends Model
     }
 
     /**
+     * Get the staff members associated with this store.
+     */
+    public function staff(): HasMany
+    {
+        return $this->hasMany(User::class, 'store_id')->where('role', UserRole::STORE_STAFF);
+    }
+
+    /**
+     * Get custom and assigned roles for this store.
+     */
+    public function roles(): HasMany
+    {
+        return $this->hasMany(Role::class, 'store_id');
+    }
+
+    /**
      * Get the primary store owner (first active owner).
      */
     public function owner(): HasOne
@@ -102,6 +118,79 @@ class Store extends Model
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class, 'store_id')->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get all medicines belonging to this store.
+     */
+    public function medicines(): HasMany
+    {
+        return $this->hasMany(Medicine::class, 'store_id');
+    }
+
+    public function suppliers(): HasMany
+    {
+        return $this->hasMany(Supplier::class, 'store_id');
+    }
+
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(Purchase::class, 'store_id');
+    }
+
+    public function batches(): HasMany
+    {
+        return $this->hasMany(Batch::class, 'store_id');
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class, 'store_id');
+    }
+
+    public function stockCounts(): HasMany
+    {
+        return $this->hasMany(StockCount::class, 'store_id');
+    }
+
+    public function customers(): HasMany
+    {
+        return $this->hasMany(Customer::class, 'store_id');
+    }
+
+    public function sales(): HasMany
+    {
+        return $this->hasMany(Sale::class, 'store_id');
+    }
+
+    public function salesReturns(): HasMany
+    {
+        return $this->hasMany(SalesReturn::class, 'store_id');
+    }
+
+    public function purchaseReturns(): HasMany
+    {
+        return $this->hasMany(PurchaseReturn::class, 'store_id');
+    }
+
+    public function expenseCategories(): HasMany
+    {
+        return $this->hasMany(ExpenseCategory::class, 'store_id');
+    }
+
+    public function expenses(): HasMany
+    {
+        return $this->hasMany(Expense::class, 'store_id');
+    }
+
+    public function storePayments(): HasMany
+    {
+        return $this->hasMany(StorePayment::class, 'store_id');
+    }
+
+    public function notificationPreferences(): HasMany
+    {
+        return $this->hasMany(NotificationPreference::class, 'store_id');
     }
 
     /**

@@ -19,13 +19,13 @@ use Illuminate\View\View;
 class AuthController extends Controller
 {
     /**
-     * Display the Store Owner login view.
+     * Display the Store login view.
      */
     public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->isStoreOwner()) {
+            if ($user->isStoreOwner() || $user->isStaff()) {
                 return redirect()->route('store.dashboard');
             }
         }
@@ -34,13 +34,13 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle an incoming Store Owner authentication request.
+     * Handle an incoming Store authentication request.
      */
     public function login(StoreLoginRequest $request): RedirectResponse
     {
         $credentials = $request->validated();
 
-        $user = User::with('store')->where('email', $credentials['email'])->first();
+        $user = User::with(['store', 'staffRole'])->where('email', $credentials['email'])->first();
 
         // 1. Verify existence and password match
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
@@ -52,15 +52,25 @@ class AuthController extends Controller
         // 2. Verify user account is active
         if (! $user->isActive()) {
             return back()
-                ->withErrors(['email' => 'Your account is deactivated. Please contact your administrator.'])
+                ->withErrors(['email' => 'Your account is deactivated. Please contact your store administrator.'])
                 ->onlyInput('email');
         }
 
-        // 3. Verify user has STORE_OWNER role
-        if ($user->role !== UserRole::STORE_OWNER) {
+        // 3. Verify user has store access (Store Owner or Store Staff)
+        if (! in_array($user->role, [UserRole::STORE_OWNER, UserRole::STORE_STAFF], true)) {
             return back()
-                ->withErrors(['email' => 'Access denied. You do not have Store Owner privileges.'])
+                ->withErrors(['email' => 'Access denied. You do not have store access privileges.'])
                 ->onlyInput('email');
+        }
+
+        // Check if assigned staff role is active
+        if ($user->isStaff() && $user->role_id) {
+            $staffRole = $user->staffRole;
+            if ($staffRole && ! $staffRole->isActive()) {
+                return back()
+                    ->withErrors(['email' => 'Your assigned staff role is currently inactive. Please contact your store owner.'])
+                    ->onlyInput('email');
+            }
         }
 
         // 4. Verify user is associated with a valid store
@@ -79,15 +89,17 @@ class AuthController extends Controller
                 ->onlyInput('email');
         }
 
-        // 6. Authenticate and regenerate session
+        // 6. Authenticate, record login timestamp, and regenerate session
+        $user->update(['last_login_at' => now()]);
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
         // Audit Log
+        $roleLabel = $user->isStoreOwner() ? 'Store Owner' : ($user->staffRole?->name ?? 'Staff');
         AuditLogger::log(
             AuditAction::LOGIN,
             AuditModule::AUTH,
-            "Store Owner {$user->name} logged into store {$user->store->name} ({$user->store->code}).",
+            "{$roleLabel} {$user->name} logged into store {$user->store->name} ({$user->store->code}).",
             $user,
             null,
             null,

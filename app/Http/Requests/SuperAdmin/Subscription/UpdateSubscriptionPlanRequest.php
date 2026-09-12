@@ -50,6 +50,8 @@ class UpdateSubscriptionPlanRequest extends FormRequest
             'limits.max_medicines' => ['required', 'integer', 'min:-1', 'max:1000000'],
             'limits.max_invoices' => ['required', 'integer', 'min:-1', 'max:1000000'],
             'limits.max_customers' => ['required', 'integer', 'min:-1', 'max:1000000'],
+            'limits.max_suppliers' => ['nullable', 'integer', 'min:-1', 'max:1000000'],
+            'limits.max_storage' => ['nullable', 'integer', 'min:-1', 'max:1000000'],
 
             // Supported Features Array
             'features' => ['nullable', 'array'],

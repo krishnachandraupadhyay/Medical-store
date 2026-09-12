@@ -44,18 +44,18 @@ class StoreOwnerMiddleware
                 ->withErrors(['email' => 'Your account is currently inactive. Please contact platform support.']);
         }
 
-        // 3. Check if user is a Store Owner
-        if ($user->role !== UserRole::STORE_OWNER) {
+        // 3. Check if user has store access (Store Owner or Store Staff)
+        if (! in_array($user->role, [UserRole::STORE_OWNER, UserRole::STORE_STAFF], true)) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             if ($request->expectsJson()) {
-                return response()->json(['message' => 'Access denied. Store Owner privileges required.'], 403);
+                return response()->json(['message' => 'Access denied. Store privileges required.'], 403);
             }
 
             return redirect()->route('store.login')
-                ->withErrors(['email' => 'Access denied. You do not have Store Owner privileges.']);
+                ->withErrors(['email' => 'Access denied. You do not have Store privileges.']);
         }
 
         // 4. Check if user has an associated store

@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Store;
+use App\Services\CurrentStoreContext;
 use App\Services\SettingService;
+use App\Services\SubscriptionAccessService;
 
 if (! function_exists('setting')) {
     /**
@@ -27,5 +30,25 @@ if (! function_exists('setting')) {
         }
 
         return $service->get($key, $default);
+    }
+}
+
+if (! function_exists('current_store')) {
+    /**
+     * Get the current store context for the authenticated user.
+     */
+    function current_store(): ?Store
+    {
+        return app(CurrentStoreContext::class)->get();
+    }
+}
+
+if (! function_exists('subscription_access')) {
+    /**
+     * Access the subscription and feature access service.
+     */
+    function subscription_access(): SubscriptionAccessService
+    {
+        return app(SubscriptionAccessService::class);
     }
 }

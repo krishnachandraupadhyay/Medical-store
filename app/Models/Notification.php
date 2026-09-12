@@ -6,6 +6,7 @@ use App\Enums\NotificationPriority;
 use App\Enums\NotificationStatus;
 use App\Enums\NotificationTargetType;
 use App\Enums\NotificationType;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,10 +25,16 @@ class Notification extends Model
         'priority',
         'target_type',
         'store_id',
+        'user_id',
         'status',
+        'read_at',
         'scheduled_at',
         'sent_at',
         'metadata',
+        'reference_type',
+        'reference_id',
+        'action_url',
+        'alert_key',
         'created_by',
         'updated_by',
     ];
@@ -37,6 +44,7 @@ class Notification extends Model
         'priority' => NotificationPriority::class,
         'target_type' => NotificationTargetType::class,
         'status' => NotificationStatus::class,
+        'read_at' => 'datetime',
         'scheduled_at' => 'datetime',
         'sent_at' => 'datetime',
         'metadata' => 'array',
@@ -47,6 +55,11 @@ class Notification extends Model
         return $this->belongsTo(Store::class, 'store_id');
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
@@ -55,6 +68,48 @@ class Notification extends Model
     public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function scopeForStore(Builder $query, int $storeId): Builder
+    {
+        return $query->where(function (Builder $q) use ($storeId) {
+            $q->where('store_id', $storeId)
+                ->orWhere('target_type', NotificationTargetType::ALL_STORES);
+        });
+    }
+
+    public function scopeUnread(Builder $query): Builder
+    {
+        return $query->whereNull('read_at');
+    }
+
+    public function scopeRead(Builder $query): Builder
+    {
+        return $query->whereNotNull('read_at');
+    }
+
+    public function markAsRead(): void
+    {
+        if (! $this->read_at) {
+            $this->update(['read_at' => now()]);
+        }
+    }
+
+    public function markAsUnread(): void
+    {
+        if ($this->read_at) {
+            $this->update(['read_at' => null]);
+        }
+    }
+
+    public function isRead(): bool
+    {
+        return $this->read_at !== null;
+    }
+
+    public function isUnread(): bool
+    {
+        return $this->read_at === null;
     }
 
     public function isDraft(): bool

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\CheckMaintenanceMode;
+use App\Http\Middleware\CheckStaffPermission;
+use App\Http\Middleware\CheckSubscriptionFeature;
 use App\Http\Middleware\StoreOwnerMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Foundation\Application;
@@ -39,6 +41,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'super_admin' => SuperAdminMiddleware::class,
             'store_owner' => StoreOwnerMiddleware::class,
+            'feature' => CheckSubscriptionFeature::class,
+            'permission' => CheckStaffPermission::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
